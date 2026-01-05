@@ -22,7 +22,7 @@
             z-index: 1000; box-shadow: 0 5px 15px rgba(0,0,0,0.5); flex-shrink: 0;
         }
         .logo { display: flex; align-items: center; cursor: pointer; height: 100%; z-index: 1002; }
-        .logo img { height: 60px; width: auto; }
+        .logo img { height: 65px; width: auto; }
 
         /* --- NAVIGATION --- */
         nav { height: 100%; display: flex; align-items: center; }
@@ -30,11 +30,11 @@
         .nav-item { position: relative; height: 100%; display: flex; align-items: center; }
         
         .nav-link { 
-            cursor: pointer; font-weight: bold; padding: 0 15px; font-size: 18px; 
+            cursor: pointer; font-weight: bold; padding: 0 15px; font-size: 14px; 
             display: flex; align-items: center; gap: 6px; color: white; text-decoration: none; 
             ; transition: 0.3s; 
         }
-        .nav-link:hover, .nav-link.active { color: var(--primary); }
+        .nav-link:hover, .nav-link.active { color: var(--primary);  }
 
         .dropdown-content {
             display: none; position: absolute; top: 70px; left: 0; background-color: #1a1a1a;
@@ -272,7 +272,7 @@
             .d-right { width: 100%; flex-direction: row; justify-content: center; margin-top: 15px; }
             .controls-bar { justify-content: center; padding: 10px; gap: 10px; } .lang-select { width: 100%; }
         }
-        @media (max-width: 480px) { .logo img { height: 45px; } .poster { height: 220px; } }
+        @media (max-width: 480px) { .logo img { height: 50px; } .poster { height: 220px; } }
 
     /* --- FOOTER CSS --- */
         footer {
@@ -354,10 +354,10 @@
     <div class="main-container">
         <div class="section-title">
             <button class="tab-btn" id="cat-title">Nouveautés</button>
-            <button onclick="toggleExport()" class="admin-btn" style="background:none; border:none; color:#666; cursor:pointer; font-size:12px; margin-left:auto;">Mode Développeur</button>
+            <button onclick="exportAllMovies()" class="admin-btn" style="background:none; border:none; color:#666; cursor:pointer; font-size:12px; margin-left:auto;">Mode Développeur (Tout)</button>
         </div>
         <div class="code-export-box" id="dev-export-area">
-            <p style="color:#aaa; font-size:12px; margin-bottom:5px;">Copie ce code et ajoute-le dans le fichier HTML (ou data.js) :</p>
+            <p style="color:#aaa; font-size:12px; margin-bottom:5px;">Copie ce code et ajoute-le dans le fichier data.js (à la suite des autres) :</p>
             <textarea class="code-area" id="export-code"></textarea>
             <button class="btn-copy" onclick="copyCode()">Copier le code</button>
         </div>
@@ -776,10 +776,29 @@
         function closeTrailer() { document.getElementById('trailer-overlay').style.display = 'none'; document.getElementById('trailer-video-container').innerHTML = ''; }
         function closeP() { document.getElementById('player-overlay').style.display = 'none'; document.getElementById('video-container').innerHTML = ''; }
         
+        // --- FONCTION MODIFIÉE : FERME LA BOÎTE D'EXPORT QUAND ON VERROUILLE ---
         function toggleAdminAuth() {
-            if(isAdminUnlocked) { isAdminUnlocked = false; document.body.classList.remove('admin-active'); alert("Mode Admin désactivé."); } 
-            else { const pass = prompt("Entrez le mot de passe administrateur :"); if(pass === "admin123") { isAdminUnlocked = true; document.body.classList.add('admin-active'); alert("Mode Admin activé !"); } else { alert("Mot de passe incorrect."); } }
+            if(isAdminUnlocked) { 
+                isAdminUnlocked = false; 
+                document.body.classList.remove('admin-active'); 
+                
+                // ICI LA CORRECTION :
+                document.getElementById('dev-export-area').style.display = 'none';
+
+                alert("Mode Admin désactivé."); 
+            } 
+            else { 
+                const pass = prompt("Entrez le mot de passe administrateur :"); 
+                if(pass === "admin123") { 
+                    isAdminUnlocked = true; 
+                    document.body.classList.add('admin-active'); 
+                    alert("Mode Admin activé !"); 
+                } else { 
+                    alert("Mot de passe incorrect."); 
+                } 
+            }
         }
+
         function toggleTypeUI() {
             const type = document.getElementById('add-type').value;
             if (type === 'serie') { document.getElementById('film-inputs').style.display = 'none'; document.getElementById('serie-inputs').style.display = 'block'; } 
@@ -910,7 +929,13 @@
             loadMovies(); closeAdmin();
             if(isEditing && currentMovie.id === editingId) { openP(editingId); }
             updateGrid();
-            alert(isEditing ? "Modifications enregistrées !" : "Ajouté avec succès !");
+            
+            // MODIFICATION ICI : Affiche le code uniquement si c'est un nouvel ajout
+            if(isEditing) {
+                alert("Modifications enregistrées !");
+            } else {
+                exportSingleMovie(movieData);
+            }
         }
         function deleteMovie() {
             if(!isEditing || !editingId) return;
@@ -924,16 +949,30 @@
                 loadMovies(); closeAdmin(); closeP(); updateGrid();
             } else { alert("Impossible de supprimer un film de base via ce menu."); }
         }
-        function toggleExport() {
+
+        function exportSingleMovie(movie) {
             const box = document.getElementById('dev-export-area');
-            if(box.style.display === 'block') { box.style.display = 'none'; } else {
-                box.style.display = 'block';
-                const storedMovies = JSON.parse(localStorage.getItem('myCustomMovies')) || [];
-                let codeText = "";
-                storedMovies.forEach(m => { codeText += JSON.stringify(m) + ",\n"; });
-                document.getElementById('export-code').value = codeText;
-            }
+            box.style.display = 'block';
+            document.getElementById('export-code').value = JSON.stringify(movie) + ",\n";
+            window.scrollTo({top:0, behavior:'smooth'});
+            // Optional: Highlight the box
+            box.style.border = "2px solid #2ecc71";
+            setTimeout(() => box.style.border = "1px solid #333", 2000);
         }
+
+        function exportAllMovies() {
+            const box = document.getElementById('dev-export-area');
+            if(box.style.display === 'block') {
+                box.style.display = 'none';
+                return;
+            }
+            box.style.display = 'block';
+            const storedMovies = JSON.parse(localStorage.getItem('myCustomMovies')) || [];
+            let codeText = "";
+            storedMovies.forEach(m => { codeText += JSON.stringify(m) + ",\n"; });
+            document.getElementById('export-code').value = codeText;
+        }
+
         function copyCode() {
             const copyText = document.getElementById("export-code");
             copyText.select(); document.execCommand("copy"); alert("Code copié !");
@@ -960,5 +999,4 @@
         function goToPage(p) { currentPage = p; updateGrid(); window.scrollTo({top:0, behavior:'smooth'}); }
     </script>
 </body>
-
 </html>
