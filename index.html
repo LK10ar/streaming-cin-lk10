@@ -7,6 +7,43 @@
      <link rel="icon" type="image/png" href="asset/logolk10.png"> 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
+        /* --- STYLE PROFIL ACTEUR --- */
+#actor-overlay {
+    display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.95); z-index: 5000;
+    justify-content: center; align-items: flex-start; overflow-y: auto; padding: 40px 20px;
+}
+
+.actor-modal {
+    background: #151515; width: 900px; max-width: 100%; position: relative;
+    border-radius: 10px; padding: 30px; box-shadow: 0 0 30px rgba(0,0,0,0.8);
+    border: 1px solid #333; margin-top: 20px;
+}
+
+.actor-close-btn {
+    position: absolute; top: 15px; right: 15px; background: none; border: none;
+    color: #888; font-size: 30px; cursor: pointer; transition: 0.3s;
+}
+.actor-close-btn:hover { color: var(--primary); transform: rotate(90deg); }
+
+.actor-header { display: flex; gap: 30px; margin-bottom: 30px; border-bottom: 1px solid #333; padding-bottom: 30px; }
+.actor-photo-box img { 
+    width: 200px; height: 300px; object-fit: cover; border-radius: 8px; 
+    box-shadow: 0 5px 15px rgba(0,0,0,0.5); border: 2px solid #333;
+}
+
+.actor-info-box { flex: 1; }
+.actor-info-box h2 { color: var(--primary); font-size: 32px; margin-bottom: 10px; }
+.ac-meta { color: #888; font-size: 14px; margin-bottom: 20px; }
+.ac-bio { color: #ccc; font-size: 14px; line-height: 1.6; max-height: 200px; overflow-y: auto; }
+
+.actor-filmography h3 { color: white; border-left: 4px solid var(--primary); padding-left: 10px; margin-bottom: 20px; }
+
+/* Mobile */
+@media (max-width: 768px) {
+    .actor-header { flex-direction: column; align-items: center; text-align: center; }
+    .actor-photo-box img { width: 150px; height: 225px; }
+}
         /* --- LIENS ACTEURS & REALISATEUR --- */
 .person-link {
     color: #ccc; /* Couleur de base */
@@ -482,6 +519,30 @@
         </div>
     </div>
 
+    <div id="actor-overlay">
+        <div class="actor-modal">
+            <button class="actor-close-btn" onclick="closeActor()">×</button>
+            
+            <div class="actor-header">
+                <div class="actor-photo-box">
+                    <img id="ac-photo" src="" alt="Photo">
+                </div>
+                <div class="actor-info-box">
+                    <h2 id="ac-name">Nom de l'acteur</h2>
+                    <div class="ac-meta">
+                        <span id="ac-job">Acteur</span> | <span id="ac-birth">Date de naissance inconnue</span>
+                    </div>
+                    <p id="ac-bio" class="ac-bio">Chargement de la biographie...</p>
+                </div>
+            </div>
+
+            <div class="actor-filmography">
+                <h3><i class="fas fa-film"></i> Films & Séries disponibles sur le site</h3>
+                <div class="movie-grid" id="actor-grid" style="grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));"></div>
+            </div>
+        </div>
+    </div>
+
     <div id="admin-overlay">
         <div class="admin-modal">
             <div class="admin-header">
@@ -787,7 +848,7 @@ function performSearch(forcedQuery = null) {
             span.onclick = () => {
                 closeP();
                 window.scrollTo({top: 0, behavior: 'smooth'});
-                performSearch(cleanName);
+                openActorProfile(cleanName);
             };
             
             container.appendChild(span);
@@ -1134,6 +1195,79 @@ function performSearch(forcedQuery = null) {
     
     // On remonte en haut pour voir les résultats
     window.scrollTo({top: 0, behavior: 'smooth'});
+}
+/* --- GESTION PROFIL ACTEUR (API TMDB) --- */
+
+// Clé API publique (si elle bloque, inscris-toi sur TMDB pour avoir la tienne)
+const TMDB_API_KEY = 'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJjMWFhNjc1ZWNhYjJkMDZjMmViNTEwMTM0NTk1MWI2ZCIsIm5iZiI6MTc2NzcxMjUxOS4xNDEsInN1YiI6IjY5NWQyNzA3YjYzM2Q0OTQ5MTE3OTE5ZSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.8-SkUqdA1A7dlY-aJqOBqS1qRjAxR-qxW0XVxciC2qU'; 
+
+async function openActorProfile(name, job = 'Acteur') {
+    // 1. Ouvrir la fenêtre
+    document.getElementById('actor-overlay').style.display = 'flex';
+    document.getElementById('ac-name').innerText = name;
+    document.getElementById('ac-job').innerText = job;
+    document.getElementById('ac-bio').innerText = "Recherche des infos sur TMDB...";
+    document.getElementById('ac-photo').src = "https://via.placeholder.com/200x300?text=No+Image"; // Image par défaut
+
+    // 2. Chercher la personne sur TMDB (Internet)
+    try {
+        const searchUrl = `https://api.themoviedb.org/3/search/person?api_key=${TMDB_API_KEY}&language=fr-FR&query=${encodeURIComponent(name)}`;
+        const response = await fetch(searchUrl);
+        const data = await response.json();
+
+        if (data.results && data.results.length > 0) {
+            const person = data.results[0]; // On prend le premier résultat
+            const personId = person.id;
+
+            // Récupérer les détails complets (Bio, Date de naissance...)
+            const detailUrl = `https://api.themoviedb.org/3/person/${personId}?api_key=${TMDB_API_KEY}&language=fr-FR`;
+            const detailResponse = await fetch(detailUrl);
+            const detailData = await detailResponse.json();
+
+            // Afficher les infos
+            if (person.profile_path) {
+                document.getElementById('ac-photo').src = `https://image.tmdb.org/t/p/w500${person.profile_path}`;
+            }
+            document.getElementById('ac-bio').innerText = detailData.biography || "Pas de biographie disponible en français.";
+            document.getElementById('ac-birth').innerText = detailData.birthday ? "Né(e) le " + detailData.birthday : "Date inconnue";
+        } else {
+            document.getElementById('ac-bio').innerText = "Aucune information trouvée pour cette personne.";
+        }
+    } catch (error) {
+        console.error("Erreur TMDB", error);
+        document.getElementById('ac-bio').innerText = "Impossible de charger les infos (Erreur connexion).";
+    }
+
+    // 3. Afficher TES films locaux correspondants
+    const actorGrid = document.getElementById('actor-grid');
+    actorGrid.innerHTML = ''; // On vide
+
+    // On cherche dans TA base de données locale
+    const relatedMovies = moviesDB.filter(m => {
+        const inCast = m.cast && m.cast.toLowerCase().includes(name.toLowerCase());
+        const inDir = m.dir && m.dir.toLowerCase().includes(name.toLowerCase());
+        return inCast || inDir;
+    });
+
+    if (relatedMovies.length === 0) {
+        actorGrid.innerHTML = '<p style="color:#666;">Aucun autre film disponible sur le site.</p>';
+    } else {
+        relatedMovies.forEach(m => {
+            const div = document.createElement('div');
+            div.className = 'movie-card';
+            div.style.display = 'block';
+            div.onclick = () => { closeActor(); openP(m.id); }; // Ferme profil -> Ouvre film
+            div.innerHTML = `
+                <div class="poster" style="height:180px; background-image: url('${m.poster}')"></div>
+                <div class="movie-info" style="padding:5px;"><div class="movie-title" style="font-size:11px;">${m.title}</div></div>
+            `;
+            actorGrid.appendChild(div);
+        });
+    }
+}
+
+function closeActor() {
+    document.getElementById('actor-overlay').style.display = 'none';
 }
     </script>
 </body>
