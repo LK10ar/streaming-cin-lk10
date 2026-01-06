@@ -107,11 +107,7 @@
             border: 1px solid #fff;
             z-index: 2;
         }
-        .grid-heart {
-            position: absolute; top: 30px; right: 8px;
-            color: white; font-size: 14px;
-            z-index: 2; text-shadow: 0 0 3px black;
-        }
+        
 
         .movie-info { padding: 8px; text-align: center; } 
         .movie-title { font-size: 13px; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -663,7 +659,6 @@
                         <span class="badge b-hd">HD</span>
                         <span class="badge b-type">${m.type.toUpperCase()}</span>
                         <div class="grid-rating">${rating}</div>
-                        <i class="far fa-heart grid-heart"></i>
                     </div>
                     <div class="movie-info"><div class="movie-title">${m.title}</div></div>
                 `;
