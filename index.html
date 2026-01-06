@@ -539,6 +539,9 @@ body.no-scroll {
             <div class="video-box" id="video-container"><i class="fas fa-play play-btn-fake"></i></div>
             
             <div class="controls-bar">
+                <div style="background:#222; color:#aaa; font-size:11px; padding:5px 20px; text-align:center; border-bottom:1px solid #333;">
+    <i class="fas fa-info-circle"></i> Astuce : Pour un meilleur confort, nous conseillons l'extension <strong>uBlock Origin</strong> sur votre navigateur.
+</div>
                 <select id="language-select" class="lang-select" onchange="changeLanguage()"></select>
                 <div style="display: flex; gap: 10px;">
                     <button class="server-btn" id="btn-server-prem" onclick="changeServer('premium')">PREMIUM</button>
@@ -999,10 +1002,31 @@ function performSearch(forcedQuery = null) {
         }
 
         function setVideoContent(iframeCode) {
-            const box = document.getElementById('video-container');
-            if (iframeCode && iframeCode.trim() !== "") { box.innerHTML = iframeCode; } 
-            else { box.innerHTML = '<div style="color:white; text-align:center; padding-top:200px;"><i class="fas fa-exclamation-circle"></i> Lien non disponible pour cette langue/serveur.</div>'; }
+    const box = document.getElementById('video-container');
+    
+    if (iframeCode && iframeCode.trim() !== "") { 
+        // --- TENTATIVE DE BLOCAGE DE PUB (SANDBOX) ---
+        // On prend le code de l'iframe et on injecte l'attribut sandbox
+        // On autorise les scripts (pour que la vidéo marche) mais on ne met PAS 'allow-popups'
+        let secureIframe = iframeCode;
+        
+        // Si c'est une iframe classique, on tente de la sécuriser
+        if(secureIframe.includes('<iframe')) {
+            // On ajoute l'attribut sandbox juste après <iframe
+            // allow-scripts : permet au lecteur de fonctionner
+            // allow-same-origin : permet de charger la vidéo
+            // allow-presentation : permet le plein écran
+            // allow-forms : permet de cliquer sur play
+            // NOTA : On ne met PAS "allow-popups" pour tenter de bloquer les pubs
+            secureIframe = secureIframe.replace('<iframe', '<iframe sandbox="allow-scripts allow-same-origin allow-presentation allow-forms"');
         }
+
+        box.innerHTML = secureIframe; 
+    } 
+    else { 
+        box.innerHTML = '<div style="color:white; text-align:center; padding-top:200px;"><i class="fas fa-exclamation-circle"></i> Lien non disponible pour cette langue/serveur.</div>'; 
+    }
+}
 
         function renderEpisodeList() {
             const listContainer = document.getElementById('ep-list-container');
