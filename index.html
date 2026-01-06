@@ -7,6 +7,18 @@
      <link rel="icon" type="image/png" href="asset/logolk10.png"> 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
+        /* --- LIENS ACTEURS & REALISATEUR --- */
+.person-link {
+    color: #ccc; /* Couleur de base */
+    cursor: pointer;
+    transition: 0.2s;
+    margin-right: 5px; /* Petit espace après la virgule */
+}
+
+.person-link:hover {
+    color: var(--primary) !important; /* Devient jaune */
+    text-decoration: underline;
+}
         /* --- BOUTONS GENRE DANS DETAILS --- */
 /* On cible les spans générés dynamiquement dans la zone d-meta */
 .d-meta span.genre-tag {
@@ -634,14 +646,32 @@
             let navBtn = document.getElementById('nav-' + cat); if(navBtn) navBtn.classList.add('active');
         }
 
-        function performSearch() {
-            const query = document.getElementById('searchInput').value.toLowerCase().trim();
-            if(query === '') { setCategory('all'); return; }
-            currentPage = 1; document.querySelectorAll('.nav-link').forEach(a => a.classList.remove('active'));
-            document.getElementById('cat-title').innerText = `Résultats pour : "${query}"`;
-            filteredList = moviesDB.filter(m => m.title.toLowerCase().includes(query));
-            updateGrid(true); 
-        }
+        // --- NOUVELLE FONCTION DE RECHERCHE (TITRE + CAST + REAL) ---
+function performSearch(forcedQuery = null) {
+    // Si on force une recherche (via un clic), on l'utilise, sinon on prend la barre de recherche
+    const query = forcedQuery ? forcedQuery.toLowerCase().trim() : document.getElementById('searchInput').value.toLowerCase().trim();
+    
+    // On met à jour visuellement la barre de recherche si ça vient d'un clic
+    if(forcedQuery) document.getElementById('searchInput').value = forcedQuery;
+
+    if(query === '') { setCategory('all'); return; }
+
+    // On réinitialise l'affichage
+    currentPage = 1; 
+    document.querySelectorAll('.nav-link').forEach(a => a.classList.remove('active'));
+    document.getElementById('cat-title').innerText = `Résultats pour : "${query}"`;
+    
+    // LE COEUR DU SYSTÈME : On cherche dans Titre OU Acteurs OU Réalisateur
+    filteredList = moviesDB.filter(m => {
+        const inTitle = m.title && m.title.toLowerCase().includes(query);
+        const inCast = m.cast && m.cast.toLowerCase().includes(query);
+        const inDir = m.dir && m.dir.toLowerCase().includes(query);
+        
+        return inTitle || inCast || inDir;
+    });
+    
+    updateGrid(true); // On affiche les résultats
+}
 
         function updateGrid(isSearchMode = false) {
             const grid = document.getElementById('grid'); grid.innerHTML = '';
@@ -733,8 +763,41 @@
                 btnMore.innerText = "Lire la suite";
                 btnMore.onclick = function() { toggleDesc(); };
             }
+// --- MODIFICATION : Réalisateur et Acteurs cliquables ---
+    
+    // Fonction utilitaire pour créer les liens (ne la copie pas ailleurs, laisse-la ici ou sors-la si tu préfères)
+    const createLinks = (containerId, textString) => {
+        const container = document.getElementById(containerId);
+        container.innerHTML = ''; // On vide
+        
+        if(!textString) { container.innerText = "-"; return; }
 
-            document.getElementById('dp-dir').innerText = m.dir; document.getElementById('dp-cast').innerText = m.cast;
+        const names = textString.split(','); // On coupe à chaque virgule
+        
+        names.forEach((name, index) => {
+            const cleanName = name.trim();
+            const span = document.createElement('span');
+            span.className = 'person-link';
+            span.innerText = cleanName;
+            
+            // Si ce n'est pas le dernier nom, on ajoute une virgule visuelle
+            if (index < names.length - 1) span.innerText += ",";
+            
+            // Au clic : on ferme le lecteur et on lance la recherche
+            span.onclick = () => {
+                closeP();
+                window.scrollTo({top: 0, behavior: 'smooth'});
+                performSearch(cleanName);
+            };
+            
+            container.appendChild(span);
+        });
+    };
+
+    // On applique la fonction magique
+    createLinks('dp-dir', m.dir);  // Pour le réalisateur
+    createLinks('dp-cast', m.cast); // Pour les acteurs
+    // --- FIN MODIFICATION ---
             
             const trailerBtn = document.getElementById('btn-trailer');
             if(m.trailer_iframe) { trailerBtn.style.opacity = '1'; trailerBtn.style.cursor = 'pointer'; } 
