@@ -539,8 +539,16 @@ body.no-scroll {
             <div class="video-box" id="video-container"><i class="fas fa-play play-btn-fake"></i></div>
             
             <div class="controls-bar">
-                <div style="background:#222; color:#aaa; font-size:11px; padding:5px 20px; text-align:center; border-bottom:1px solid #333;">
-    <i class="fas fa-info-circle"></i> Astuce : Pour un meilleur confort, nous conseillons l'extension <strong>uBlock Origin</strong> sur votre navigateur.
+                <div style="background:#222; color:#aaa; font-size:11px; padding:5px 20px; text-align:center; border-bottom:1px solid #333; display: flex; align-items: center; justify-content: center; gap: 8px;">
+    <i class="fas fa-info-circle"></i> 
+    <span>Astuce : Pour un meilleur confort, installez l'extension <strong>uBlock Origin</strong></span>
+    <a href="https://ublockorigin.com/" target="_blank" title="Cliquez pour installer uBlock Origin" style="display: flex; align-items: center;">
+        <img src="asset\uBlock-Origin.png" 
+             alt="Logo uBlock" 
+             style="width: auto; height: 55px; vertical-align: middle; cursor: pointer; transition: 0.3s ease;" 
+             onmouseover="this.style.transform='scale(1.2)'; this.style.filter='drop-shadow(0 0 8px var(--primary))';" 
+             onmouseout="this.style.transform='scale(1)'; this.style.filter='none';">
+    </a>
 </div>
                 <select id="language-select" class="lang-select" onchange="changeLanguage()"></select>
                 <div style="display: flex; gap: 10px;">
