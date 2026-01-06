@@ -2,6 +2,9 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ciné LK10</title>
      <link rel="icon" type="image/png" href="asset/logolk10.png"> 
@@ -465,6 +468,22 @@ body.no-scroll {
 ::-webkit-scrollbar-thumb:hover {
     background: #e6c800; /* Jaune légèrement plus foncé au survol */
 }
+/* Adaptation Mobile pour la barre uBlock */
+@media (max-width: 768px) {
+    .ublock-box {
+        height: auto !important; /* Laisse la hauteur s'adapter au texte */
+        padding: 10px !important; /* Un peu plus d'espace */
+        flex-direction: row; /* Garde les éléments sur une ligne si possible */
+        flex-wrap: wrap; /* Permet de passer à la ligne si c'est trop long */
+        line-height: 1.4;
+    }
+    
+    .ublock-text {
+        font-size: 11px; /* Réduit un peu le texte pour qu'il rentre mieux */
+        flex: 1; /* Le texte prend toute la place disponible */
+        text-align: center;
+    }
+}
     </style>
 </head>
 <body>
@@ -539,14 +558,14 @@ body.no-scroll {
             <div class="video-box" id="video-container"><i class="fas fa-play play-btn-fake"></i></div>
             
             <div class="controls-bar">
-                <div style="background:#222; color:#aaa; font-size:11px; padding:5px 20px; text-align:center; border-bottom:1px solid #333; display: flex; align-items: center; justify-content: center; gap: 8px;">
+              <div class="ublock-box" style="background:#222; color:#aaa; font-size:13px; height: 38px; padding: 0 15px; border-radius: 4px; display: flex; align-items: center; justify-content: center; gap: 8px; border: 1px solid #333; overflow: hidden;">
     <i class="fas fa-info-circle"></i> 
-    <span>Astuce : Pour un meilleur confort, installez l'extension <strong>uBlock Origin</strong></span>
+    <span class="ublock-text">Astuce : Installez <strong>uBlock Origin</strong> pour supprimer les publicités</span>
     <a href="https://ublockorigin.com/" target="_blank" title="Cliquez pour installer uBlock Origin" style="display: flex; align-items: center;">
-        <img src="asset\uBlock-Origin.png" 
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/UBlock_Origin.svg/1200px-UBlock_Origin.svg.png" 
              alt="Logo uBlock" 
-             style="width: auto; height: 55px; vertical-align: middle; cursor: pointer; transition: 0.3s ease;" 
-             onmouseover="this.style.transform='scale(1.2)'; this.style.filter='drop-shadow(0 0 8px var(--primary))';" 
+             style="width: auto; height: 24px; vertical-align: middle; cursor: pointer; transition: 0.3s ease;" 
+             onmouseover="this.style.transform='scale(1.2)'; this.style.filter='drop-shadow(0 0 5px var(--primary))';" 
              onmouseout="this.style.transform='scale(1)'; this.style.filter='none';">
     </a>
 </div>
@@ -683,7 +702,12 @@ body.no-scroll {
 
     <div class="admin-lock-footer" onclick="toggleAdminAuth()">🔒</div>
 
-    <script src="data.js"></script>
+    <script>
+    var script = document.createElement('script');
+    // On ajoute ?v= et l'heure actuelle (ex: data.js?v=171569854)
+    script.src = "data.js?v=" + new Date().getTime(); 
+    document.body.appendChild(script);
+</script>
 
     <script>
         if (typeof baseMovies === 'undefined') { var baseMovies = []; }
