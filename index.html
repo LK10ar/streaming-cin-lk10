@@ -7,6 +7,19 @@
      <link rel="icon" type="image/png" href="asset/logolk10.png"> 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
+        /* --- BOUTONS GENRE DANS DETAILS --- */
+/* On cible les spans générés dynamiquement dans la zone d-meta */
+.d-meta span.genre-tag {
+    cursor: pointer;
+    transition: 0.2s;
+    display: inline-block; /* Pour bien gérer les marges */
+}
+
+.d-meta span.genre-tag:hover {
+    background-color: var(--primary) !important; /* Devient jaune */
+    color: black !important; /* Texte noir */
+    transform: translateY(-2px); /* Petit effet de rebond */
+}
         :root { --primary: #ffde00; --dark: #151515; --light: #222; --text: #eee; --grey: #aaa; --danger: #e74c3c; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Arial', sans-serif; }
         
@@ -674,7 +687,30 @@
             document.getElementById('dp-img').style.backgroundImage = `url('${m.poster}')`;
             document.getElementById('dp-title').innerText = m.title; 
             document.getElementById('dp-year').innerText = " - " + m.year;
-            document.getElementById('dp-genre').innerText = m.genre; 
+            // --- MODIFICATION DEBUT : Gestion des tags cliquables ---
+    const genreZone = document.getElementById('dp-genre');
+    const genreText = m.genre || "Non classé";
+    
+    // On vide la zone
+    genreZone.innerHTML = ''; 
+
+    // On sépare les genres (ex: "Action, Drame" devient ["Action", "Drame"])
+    const genresArray = genreText.split(',');
+
+    // Pour chaque genre, on crée un petit bouton
+    genresArray.forEach(g => {
+        const cleanGenre = g.trim(); // Enlève les espaces inutiles
+        const tag = document.createElement('span');
+        tag.className = 'genre-tag'; // La classe pour le CSS
+        tag.innerText = cleanGenre;
+        
+        // Au clic, on lance la fonction créée à l'étape 2
+        tag.onclick = function() { filterByTag(cleanGenre); };
+        
+        // On ajoute le bouton dans la zone + un petit espace
+        genreZone.appendChild(tag);
+    });
+    // --- MODIFICATION FIN ---
             
             const ratingValue = m.rating || "-";
             const scorePoster = document.getElementById('dp-score-poster');
@@ -1026,6 +1062,16 @@
             if (currentPage < totalPages) { addBtn(currentPage + 1, '»', false); }
         }
         function goToPage(p) { currentPage = p; updateGrid(); window.scrollTo({top:0, behavior:'smooth'}); }
+    function filterByTag(genre) {
+    closeP(); // On ferme la fenêtre de détails
+    
+    // On lance le filtre sur TOUTES les catégories (Films + Séries)
+    // Tu peux remplacer 'all' par currentCategory si tu veux rester dans films ou séries uniquement
+    setFilter('all', genre); 
+    
+    // On remonte en haut pour voir les résultats
+    window.scrollTo({top: 0, behavior: 'smooth'});
+}
     </script>
 </body>
 </html>
