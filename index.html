@@ -567,6 +567,16 @@ body.no-scroll {
         box-shadow: 0 0 10px #ffde00, inset 0 0 10px #ffde00; 
     }
 }
+
+/* --- CENTRAGE PARFAIT DU MENU (UNIQUEMENT SUR PC) --- */
+@media (min-width: 993px) {
+    #main-nav {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        height: 100%; /* Garde la hauteur pour l'alignement vertical */
+    }
+}
     </style>
 </head>
 <body>
