@@ -161,6 +161,27 @@ body.no-scroll {
         .add-btn-header { background-color: #2ecc71; color: white; border: none; padding: 8px 15px; border-radius: 4px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 5px; }
         .burger-menu { display: none; font-size: 24px; cursor: pointer; color: white; margin-left: 15px; }
 
+/* --- BOUTON DECONNEXION ADMIN --- */
+.logout-btn-header { 
+    background-color: #e74c3c; /* Rouge */
+    color: white; 
+    border: none; 
+    padding: 8px 15px; 
+    border-radius: 4px; 
+    font-weight: bold; 
+    cursor: pointer; 
+    display: flex; 
+    align-items: center; 
+    gap: 5px; 
+    margin-right: 10px; /* Espace entre le rouge et le vert */
+    transition: 0.3s;
+}
+
+.logout-btn-header:hover { 
+    background-color: #c0392b; /* Rouge plus foncé au survol */
+    transform: scale(1.05);
+}
+
         /* --- CONTENU --- */
         body:not(.admin-active) .admin-btn { display: none !important; }
      .main-container { 
@@ -486,6 +507,7 @@ body.no-scroll {
 }
 
 /* --- PAGE D'ACCUEIL / COVER --- */
+/* --- PAGE D'ACCUEIL / COVER --- */
 #cover-page {
     position: fixed; 
     top: 0; 
@@ -493,7 +515,10 @@ body.no-scroll {
     width: 100%; 
     height: 100%; 
     background-color: black; 
-    z-index: 9999;
+    
+    /* MODIFICATION ICI : On passe à 10000 pour être SUR le cadenas (qui est à 9999) */
+    z-index: 10000;
+    
     display: flex; 
     justify-content: center; 
     align-items: center;
@@ -550,42 +575,48 @@ body.no-scroll {
         <p>clique pour entrée...</p>
     </div>
     <header>
-        <div style="display:flex; align-items:center;">
-            <div class="burger-menu" onclick="toggleMobileMenu()"><i class="fas fa-bars"></i></div>
-            <div class="logo" id="home-logo" style="margin-left:15px;">
-                <img src="asset\logolk10.png" alt="Ciné LK10 Logo">
-            </div>
+    <div style="display:flex; align-items:center;">
+        <div class="burger-menu" onclick="toggleMobileMenu()"><i class="fas fa-bars"></i></div>
+        <div class="logo" id="home-logo" style="margin-left:15px;">
+            <img src="asset\logolk10.png" alt="Ciné LK10 Logo">
         </div>
-        
-        <nav id="main-nav">
-            <ul class="nav-links">
-                <li class="nav-item">
-                    <a id="nav-all" class="nav-link active" onclick="setCategory('all'); toggleMobileMenu()"><i class="fas fa-home"></i> ACCUEIL</a>
-                </li>
-                <li class="nav-item" onclick="toggleSubMenu(this)">
-                    <a id="nav-film" class="nav-link"><span><i class="fas fa-film"></i> FILMS</span><i class="fas fa-chevron-down" style="font-size:10px;"></i></a>
-                    <div class="dropdown-content">
-                        <div class="drop-column"><h3><i class="fas fa-tags"></i> PAR GENRE</h3><div id="drop-film-genre-list"></div></div>
-                    </div>
-                </li>
-                <li class="nav-item" onclick="toggleSubMenu(this)">
-                    <a id="nav-serie" class="nav-link"><span><i class="fas fa-video"></i> SÉRIES</span><i class="fas fa-chevron-down" style="font-size:10px;"></i></a>
-                    <div class="dropdown-content">
-                        <div class="drop-column"><h3><i class="fas fa-tags"></i> PAR GENRE</h3><div id="drop-serie-genre-list"></div></div>
-                    </div>
-                </li>
-            </ul>
-        </nav>
+    </div>
+    
+    <nav id="main-nav">
+        <ul class="nav-links">
+            <li class="nav-item">
+                <a id="nav-all" class="nav-link active" onclick="setCategory('all'); toggleMobileMenu()"><i class="fas fa-home"></i> ACCUEIL</a>
+            </li>
+            <li class="nav-item" onclick="toggleSubMenu(this)">
+                <a id="nav-film" class="nav-link"><span><i class="fas fa-film"></i> FILMS</span><i class="fas fa-chevron-down" style="font-size:10px;"></i></a>
+                <div class="dropdown-content">
+                    <div class="drop-column"><h3><i class="fas fa-tags"></i> PAR GENRE</h3><div id="drop-film-genre-list"></div></div>
+                </div>
+            </li>
+            <li class="nav-item" onclick="toggleSubMenu(this)">
+                <a id="nav-serie" class="nav-link"><span><i class="fas fa-video"></i> SÉRIES</span><i class="fas fa-chevron-down" style="font-size:10px;"></i></a>
+                <div class="dropdown-content">
+                    <div class="drop-column"><h3><i class="fas fa-tags"></i> PAR GENRE</h3><div id="drop-serie-genre-list"></div></div>
+                </div>
+            </li>
+        </ul>
+    </nav>
 
-        <div class="header-right">
-            <button class="add-btn-header admin-btn" onclick="openAdmin()"><i class="fas fa-plus"></i></button>
-            <div class="search-box">
-                <input type="text" id="searchInput" placeholder="Rechercher...">
-                <i class="fas fa-search" id="searchIcon"></i>
-            </div>
+    <div class="header-right">
+        <button class="logout-btn-header admin-btn" onclick="toggleAdminAuth()" title="Quitter le mode Admin">
+            <i class="fas fa-power-off"></i>
+        </button>
+
+        <button class="add-btn-header admin-btn" onclick="openAdmin()">
+            <i class="fas fa-plus"></i>
+        </button>
+
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Rechercher...">
+            <i class="fas fa-search" id="searchIcon"></i>
         </div>
-    </header>
-
+    </div>
+</header>
     <div class="main-container">
         <div class="section-title">
             <button class="tab-btn" id="cat-title">Nouveautés</button>
@@ -761,7 +792,6 @@ body.no-scroll {
         </div>
     </div>
 
-    <div class="admin-lock-footer" onclick="toggleAdminAuth()">🔒</div>
 
     <script>
     var script = document.createElement('script');
@@ -794,33 +824,49 @@ body.no-scroll {
         let currentEpisodeIndex = 0; 
 
         window.onload = () => {
-            loadMovies();
-            initMegaMenu(); 
-            renderAdminGenres(); 
+    loadMovies();
+    initMegaMenu(); 
+    renderAdminGenres(); 
 
-            document.getElementById('home-logo').onclick = () => setCategory('all');
-            document.getElementById('nav-all').onclick = () => { setCategory('all'); closeMobileMenu(); };
-            
-            const searchInput = document.getElementById('searchInput');
-            searchInput.addEventListener('keypress', (e) => { if(e.key === 'Enter') performSearch(); });
-            document.getElementById('searchIcon').addEventListener('click', performSearch);
-            
-            setCategory('all');
-        };
-
-        /* --- GESTION DE LA PAGE D'ACCUEIL (COVER PAGE) --- */
+    document.getElementById('home-logo').onclick = () => setCategory('all');
+    document.getElementById('nav-all').onclick = () => { setCategory('all'); closeMobileMenu(); };
+    
+    const searchInput = document.getElementById('searchInput');
+    
+    // 1. Recherche normale avec Entrée
+    searchInput.addEventListener('keypress', (e) => { if(e.key === 'Enter') performSearch(); });
+    
+    // 2. Gestion du clic sur la loupe
+    document.getElementById('searchIcon').addEventListener('click', () => performSearch());
+    
+    // 3. --- CODE SECRET ADMIN ---
+    // Ce code vérifie en temps réel ce que tu tapes
+    searchInput.addEventListener('input', function(e) {
+        if (e.target.value === 'admin123') { // Si le texte est exactement le mot de passe
+            toggleAdminAuth(true); // On lance l'admin directement
+            e.target.value = ''; // On efface le mot de passe pour qu'il reste secret
+        }
+    });
+    
+    setCategory('all');
+};
+ /* --- GESTION DE LA PAGE D'ACCUEIL (COVER PAGE) --- */
 document.addEventListener("DOMContentLoaded", function() {
     const cover = document.getElementById('cover-page');
     
     if(cover) {
+        // 1. IMPORTANT : On cache la barre de scroll dès le début
+        document.body.classList.add('no-scroll');
+
         cover.addEventListener('click', function() {
-            // 1. On lance l'animation de disparition (transparence)
+            // 2. Animation de disparition
             cover.style.opacity = '0';
             
-            // 2. On attend la fin de l'animation (0.5s) pour supprimer le bloc
+            // 3. Une fois l'animation finie (0.5s), on enlève le bloc et on remet le scroll
             setTimeout(function() {
                 cover.style.display = 'none';
-            }, 500); // 500ms correspond à tes 0.5s de transition CSS
+                document.body.classList.remove('no-scroll'); // On réactive le scroll ici
+            }, 500);
         });
     }
 });
@@ -1213,28 +1259,25 @@ function performSearch(forcedQuery = null) {
         function closeTrailer() { document.getElementById('trailer-overlay').style.display = 'none'; document.getElementById('trailer-video-container').innerHTML = ''; }
         function closeP() { document.getElementById('player-overlay').style.display = 'none'; document.getElementById('video-container').innerHTML = ''; }
         
-        // --- FONCTION MODIFIÉE : FERME LA BOÎTE D'EXPORT QUAND ON VERROUILLE ---
-        function toggleAdminAuth() {
-            if(isAdminUnlocked) { 
-                isAdminUnlocked = false; 
-                document.body.classList.remove('admin-active'); 
-                
-                // ICI LA CORRECTION :
-                document.getElementById('dev-export-area').style.display = 'none';
+        // --- FONCTION MODIFIÉE : ACTIVE/DÉSACTIVE LE MODE ADMIN ---
+function toggleAdminAuth(forceUnlock = false) {
+    // Si on est déjà débloqué, on verrouille
+    if(isAdminUnlocked) { 
+        isAdminUnlocked = false; 
+        document.body.classList.remove('admin-active'); 
+        
+        // On cache la zone d'export code
+        document.getElementById('dev-export-area').style.display = 'none';
 
-                alert("Mode Admin désactivé."); 
-            } 
-            else { 
-                const pass = prompt("Entrez le mot de passe administrateur :"); 
-                if(pass === "admin123") { 
-                    isAdminUnlocked = true; 
-                    document.body.classList.add('admin-active'); 
-                    alert("Mode Admin activé !"); 
-                } else { 
-                    alert("Mot de passe incorrect."); 
-                } 
-            }
-        }
+        alert("Mode Admin désactivé."); 
+    } 
+    // Sinon, si le code secret a été tapé (forceUnlock est vrai)
+    else if (forceUnlock) { 
+        isAdminUnlocked = true; 
+        document.body.classList.add('admin-active'); 
+        alert("Mode Admin activé !"); 
+    }
+}
 
         function toggleTypeUI() {
             const type = document.getElementById('add-type').value;
@@ -1454,32 +1497,29 @@ function closeP() {
 const TMDB_API_KEY = 'c1aa675ecab2d06c2eb5101345951b6d'; 
 
 async function openActorProfile(name, job = 'Acteur') {
-    // 1. Ouvrir la fenêtre
+    // 1. Bloquer le scroll
+    document.body.classList.add('no-scroll');
+
+    // 2. Ouvrir la fenêtre
     document.getElementById('actor-overlay').style.display = 'flex';
     document.getElementById('ac-name').innerText = name;
     document.getElementById('ac-job').innerText = job;
     document.getElementById('ac-bio').innerText = "Recherche des infos sur TMDB...";
-    document.getElementById('ac-photo').src = "https://via.placeholder.com/200x300?text=No+Image"; // Image par défaut
-function closeActor() {
-    document.body.classList.remove('no-scroll'); // <--- AJOUTE CETTE LIGNE ICI
-    document.getElementById('actor-overlay').style.display = 'none';
-}
-    // 2. Chercher la personne sur TMDB (Internet)
+    document.getElementById('ac-photo').src = "https://via.placeholder.com/200x300?text=No+Image"; 
+
+    // 3. Chercher la personne sur TMDB
     try {
         const searchUrl = `https://api.themoviedb.org/3/search/person?api_key=${TMDB_API_KEY}&language=fr-FR&query=${encodeURIComponent(name)}`;
         const response = await fetch(searchUrl);
         const data = await response.json();
 
         if (data.results && data.results.length > 0) {
-            const person = data.results[0]; // On prend le premier résultat
+            const person = data.results[0];
             const personId = person.id;
-
-            // Récupérer les détails complets (Bio, Date de naissance...)
             const detailUrl = `https://api.themoviedb.org/3/person/${personId}?api_key=${TMDB_API_KEY}&language=fr-FR`;
             const detailResponse = await fetch(detailUrl);
             const detailData = await detailResponse.json();
 
-            // Afficher les infos
             if (person.profile_path) {
                 document.getElementById('ac-photo').src = `https://image.tmdb.org/t/p/w500${person.profile_path}`;
             }
@@ -1493,11 +1533,10 @@ function closeActor() {
         document.getElementById('ac-bio').innerText = "Impossible de charger les infos (Erreur connexion).";
     }
 
-    // 3. Afficher TES films locaux correspondants
+    // 4. Afficher les films locaux correspondants
     const actorGrid = document.getElementById('actor-grid');
-    actorGrid.innerHTML = ''; // On vide
+    actorGrid.innerHTML = ''; 
 
-    // On cherche dans TA base de données locale
     const relatedMovies = moviesDB.filter(m => {
         const inCast = m.cast && m.cast.toLowerCase().includes(name.toLowerCase());
         const inDir = m.dir && m.dir.toLowerCase().includes(name.toLowerCase());
@@ -1511,7 +1550,7 @@ function closeActor() {
             const div = document.createElement('div');
             div.className = 'movie-card';
             div.style.display = 'block';
-            div.onclick = () => { closeActor(); openP(m.id); }; // Ferme profil -> Ouvre film
+            div.onclick = () => { closeActor(); openP(m.id); }; 
             div.innerHTML = `
                 <div class="poster" style="height:180px; background-image: url('${m.poster}')"></div>
                 <div class="movie-info" style="padding:5px;"><div class="movie-title" style="font-size:11px;">${m.title}</div></div>
@@ -1519,9 +1558,11 @@ function closeActor() {
             actorGrid.appendChild(div);
         });
     }
-}
+} 
 
+// CETTE FONCTION DOIT ÊTRE EN DEHORS (C'était ça l'erreur)
 function closeActor() {
+    document.body.classList.remove('no-scroll');
     document.getElementById('actor-overlay').style.display = 'none';
 }
     </script>
