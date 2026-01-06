@@ -983,31 +983,79 @@ function performSearch(forcedQuery = null) {
         function changeServer(serverName) { currentServer = serverName; updatePlayerInterface(); }
 
         function updatePlayerInterface() {
-            if (!currentMovie) return;
-            document.getElementById('btn-server-prem').classList.remove('active');
-            document.getElementById('btn-server-uql').classList.remove('active');
-            if(currentServer === 'premium') document.getElementById('btn-server-prem').classList.add('active');
-            else document.getElementById('btn-server-uql').classList.add('active');
+    if (!currentMovie) return;
 
-            if (currentMovie.type === 'film') {
-                let link = "";
-                if (currentLanguage === 'vf') { link = (currentServer === 'premium') ? currentMovie.iframe_premium : currentMovie.iframe_uqload; } 
-                else if (currentLanguage === 'vostfr') { link = (currentServer === 'premium') ? currentMovie.iframe_premium_vostfr : currentMovie.iframe_uqload_vostfr; }
-                setVideoContent(link);
-            }
-            else if (currentMovie.type === 'serie') {
-                renderEpisodeList(); 
-                const eps = currentMovie.episodes || [];
-                if (eps.length > 0 && eps[currentEpisodeIndex]) {
-                    const ep = eps[currentEpisodeIndex];
-                    let link = "";
-                    if (currentLanguage === 'vf') { link = (currentServer === 'premium') ? ep.iframe_premium : ep.iframe_uqload; } 
-                    else if (currentLanguage === 'vostfr') { link = (currentServer === 'premium') ? ep.iframe_premium_vostfr : ep.iframe_uqload_vostfr; }
-                    setVideoContent(link);
-                    highlightActiveEpisode();
-                } else { setVideoContent(""); }
-            }
+    // --- 1. Récupération des liens selon le type (Film ou Épisode) ---
+    let linkPremium = "";
+    let linkUqload = "";
+
+    if (currentMovie.type === 'film') {
+        if (currentLanguage === 'vf') {
+            linkPremium = currentMovie.iframe_premium;
+            linkUqload = currentMovie.iframe_uqload;
+        } else if (currentLanguage === 'vostfr') {
+            linkPremium = currentMovie.iframe_premium_vostfr;
+            linkUqload = currentMovie.iframe_uqload_vostfr;
         }
+    } 
+    else if (currentMovie.type === 'serie') {
+        renderEpisodeList(); 
+        const eps = currentMovie.episodes || [];
+        if (eps.length > 0 && eps[currentEpisodeIndex]) {
+            const ep = eps[currentEpisodeIndex];
+            if (currentLanguage === 'vf') {
+                linkPremium = ep.iframe_premium;
+                linkUqload = ep.iframe_uqload;
+            } else if (currentLanguage === 'vostfr') {
+                linkPremium = ep.iframe_premium_vostfr;
+                linkUqload = ep.iframe_uqload_vostfr;
+            }
+            highlightActiveEpisode();
+        }
+    }
+
+    // --- 2. Gestion intelligente des boutons ---
+    const btnPrem = document.getElementById('btn-server-prem');
+    const btnUql = document.getElementById('btn-server-uql');
+
+    // On cache tout par défaut
+    btnPrem.style.display = 'none';
+    btnUql.style.display = 'none';
+
+    // On affiche seulement si le lien existe
+    if (linkPremium && linkPremium.trim() !== "") {
+        btnPrem.style.display = 'inline-block';
+    }
+    if (linkUqload && linkUqload.trim() !== "") {
+        btnUql.style.display = 'inline-block';
+    }
+
+    // --- 3. Sélection automatique du serveur ---
+    // Si le serveur actuel est caché (ex: on était sur Uqload mais il n'y en a pas pour ce film), on change
+    if (currentServer === 'premium' && btnPrem.style.display === 'none' && btnUql.style.display !== 'none') {
+        currentServer = 'uqload';
+    }
+    if (currentServer === 'uqload' && btnUql.style.display === 'none' && btnPrem.style.display !== 'none') {
+        currentServer = 'premium';
+    }
+
+    // Mise à jour visuelle des classes "active"
+    btnPrem.classList.remove('active');
+    btnUql.classList.remove('active');
+    
+    if (currentServer === 'premium' && btnPrem.style.display !== 'none') {
+        btnPrem.classList.add('active');
+        setVideoContent(linkPremium);
+    } 
+    else if (currentServer === 'uqload' && btnUql.style.display !== 'none') {
+        btnUql.classList.add('active');
+        setVideoContent(linkUqload);
+    } 
+    else {
+        // Aucun lien dispo
+        setVideoContent(""); 
+    }
+}
 
         function setVideoContent(iframeCode) {
     const box = document.getElementById('video-container');
