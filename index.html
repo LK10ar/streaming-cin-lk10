@@ -484,10 +484,71 @@ body.no-scroll {
         text-align: center;
     }
 }
+
+/* --- PAGE D'ACCUEIL / COVER --- */
+#cover-page {
+    position: fixed; 
+    top: 0; 
+    left: 0; 
+    width: 100%; 
+    height: 100%; 
+    background-color: black; 
+    z-index: 9999;
+    display: flex; 
+    justify-content: center; 
+    align-items: center;
+    transition: opacity 0.5s ease-out; 
+}
+
+/* Le texte "clique pour entrée..." style NÉON */
+#cover-page p {
+    font-size: 2em; 
+    font-weight: bold;
+    text-transform: uppercase; 
+    color: #ffde00; /* Jaune */
+    padding: 20px 40px;
+    border: 4px solid #ffde00; /* Bordure jaune */
+    border-radius: 10px;
+    cursor: pointer;
+    
+    /* L'effet de lumière (Glow) */
+    box-shadow: 0 0 15px #ffde00, inset 0 0 15px #ffde00;
+    text-shadow: 0 0 10px #ffde00;
+    
+    /* Animation */
+    animation: neon-pulse 1.5s infinite alternate;
+}
+
+@keyframes neon-pulse {
+    from {
+        box-shadow: 0 0 10px #ffde00, inset 0 0 10px #ffde00;
+        opacity: 1;
+    }
+    to {
+        box-shadow: 0 0 25px #ffde00, inset 0 0 25px #ffde00;
+        opacity: 0.6;
+    }
+}
+/* --- RESPONSIVE COVER PAGE (MOBILE & TABLETTE) --- */
+@media (max-width: 768px) {
+    #cover-page p {
+        font-size: 1.2em;       /* Texte plus petit (au lieu de 2em) */
+        padding: 15px 25px;     /* Marges internes réduites */
+        border-width: 3px;      /* Bordure un peu plus fine pour l'élégance */
+        max-width: 85%;         /* La boîte ne dépassera jamais 85% de la largeur de l'écran */
+        text-align: center;     /* Centre le texte si jamais il passe sur 2 lignes */
+        
+        /* On réduit légèrement l'intensité du néon pour ne pas éblouir sur petit écran */
+        box-shadow: 0 0 10px #ffde00, inset 0 0 10px #ffde00; 
+    }
+}
     </style>
 </head>
 <body>
 
+   <div id="cover-page">
+        <p>clique pour entrée...</p>
+    </div>
     <header>
         <div style="display:flex; align-items:center;">
             <div class="burger-menu" onclick="toggleMobileMenu()"><i class="fas fa-bars"></i></div>
@@ -746,6 +807,23 @@ body.no-scroll {
             
             setCategory('all');
         };
+
+        /* --- GESTION DE LA PAGE D'ACCUEIL (COVER PAGE) --- */
+document.addEventListener("DOMContentLoaded", function() {
+    const cover = document.getElementById('cover-page');
+    
+    if(cover) {
+        cover.addEventListener('click', function() {
+            // 1. On lance l'animation de disparition (transparence)
+            cover.style.opacity = '0';
+            
+            // 2. On attend la fin de l'animation (0.5s) pour supprimer le bloc
+            setTimeout(function() {
+                cover.style.display = 'none';
+            }, 500); // 500ms correspond à tes 0.5s de transition CSS
+        });
+    }
+});
 
         function loadMovies() {
             const storedMovies = JSON.parse(localStorage.getItem('myCustomMovies')) || [];
