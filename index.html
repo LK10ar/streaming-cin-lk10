@@ -7,6 +7,10 @@
      <link rel="icon" type="image/png" href="asset/logolk10.png"> 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
+        /* --- EMPÊCHER LE SCROLL DE L'ARRIÈRE-PLAN --- */
+body.no-scroll {
+    overflow: hidden; /* Coupe tout ce qui dépasse */
+}
         /* --- STYLE PROFIL ACTEUR --- */
 #actor-overlay {
     display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -36,7 +40,29 @@
 .actor-info-box h2 { color: var(--primary); font-size: 32px; margin-bottom: 10px; }
 .ac-meta { color: #888; font-size: 14px; margin-bottom: 20px; }
 .ac-bio { color: #ccc; font-size: 14px; line-height: 1.6; max-height: 200px; overflow-y: auto; }
+/* --- SCROLLBAR PERSONNALISÉE (BIO ACTEUR) --- */
 
+/* 1. La "piste" (le fond de la barre) */
+.ac-bio::-webkit-scrollbar {
+    width: 8px; /* Largeur de la barre */
+}
+
+.ac-bio::-webkit-scrollbar-track {
+    background: #111; /* Fond noir très foncé */
+    border-radius: 4px;
+}
+
+/* 2. Le "pouce" (la partie qui bouge) */
+.ac-bio::-webkit-scrollbar-thumb {
+    background: var(--primary); /* Ton jaune (#ffde00) */
+    border-radius: 4px; /* Bords arrondis */
+    border: 2px solid #111; /* Petite bordure noire pour un effet "flottant" */
+}
+
+/* 3. Au survol de la souris */
+.ac-bio::-webkit-scrollbar-thumb:hover {
+    background: #e6c800; /* Un jaune un peu plus foncé au survol */
+}
 .actor-filmography h3 { color: white; border-left: 4px solid var(--primary); padding-left: 10px; margin-bottom: 20px; }
 
 /* Mobile */
@@ -192,13 +218,27 @@
         .player-content { width: 100%; max-width: 1200px; margin: 40px auto; background: #111; box-shadow: 0 0 20px rgba(0,0,0,0.8); position: relative; border-radius: 5px; }
         .player-actions { position: absolute; top: -40px; right: 0; display: flex; gap: 10px; }
         
-        .close-corner { 
-            background: #cc0000; color: white; border: 2px solid #fff; width: 30px; height: 30px; 
-            border-radius: 50%; cursor: pointer; font-weight: bold; display: flex; 
-            align-items: center; justify-content: center; transition: 0.3s;
-            position: absolute; top: -15px; right: -15px; z-index: 3000;
-        }
-        .close-corner:hover { background: white; color: #cc0000; }
+        /* --- MODIFICATION : CROIX JAUNE STYLE ACTEUR --- */
+.close-corner {
+    background: none; /* Plus de fond rouge */
+    border: none;     /* Plus de bordure blanche */
+    color: #888;      /* Couleur grise par défaut, comme sur la fiche acteur */
+    font-size: 30px;  /* Taille de la croix */
+    cursor: pointer;
+    transition: 0.3s;
+    position: absolute;
+    top: 15px;        /* Position ajustée pour être dans le coin */
+    right: 15px;      /* Position ajustée */
+    z-index: 3000;
+    display: flex; align-items: center; justify-content: center;
+    width: auto; height: auto; border-radius: 0; font-weight: normal;
+}
+
+.close-corner:hover {
+    background: none;       /* Pas de fond au survol */
+    color: var(--primary);  /* Devient JAUNE au survol */
+    transform: rotate(90deg); /* Petit effet de rotation sympa */
+}
         
         .edit-btn-player { background: #3498db; color: white; border: 2px solid #fff; width: auto; height: 30px; border-radius: 15px; padding: 0 15px; cursor: pointer; font-weight: bold; align-items: center; justify-content: center; font-size: 12px; gap: 5px; position: absolute; top: -40px; right: 40px; }
         .edit-btn-player:hover { background: white; color: #3498db; }
@@ -401,6 +441,30 @@
             transform: scale(1.1); /* Petit effet de zoom au survol */
             filter: drop-shadow(0 0 5px var(--primary)); /* Lueur jaune au survol */
         }
+        /* --- SCROLLBAR PERSONNALISÉE (GLOBAL) --- */
+
+/* Largeur de la barre de défilement */
+::-webkit-scrollbar {
+    width: 10px; /* Un peu plus large pour être bien visible */
+}
+
+/* Fond de la barre (la piste) */
+::-webkit-scrollbar-track {
+    background: #151515; /* Couleur de fond sombre du site */
+    border-left: 1px solid #333; /* Séparation subtile */
+}
+
+/* Le curseur (la partie qui bouge) */
+::-webkit-scrollbar-thumb {
+    background: var(--primary); /* Votre jaune (#ffde00) */
+    border-radius: 5px; /* Arrondi pour un look moderne */
+    border: 2px solid #151515; /* Bordure interne pour détacher le curseur du fond */
+}
+
+/* Couleur du curseur au survol */
+::-webkit-scrollbar-thumb:hover {
+    background: #e6c800; /* Jaune légèrement plus foncé au survol */
+}
     </style>
 </head>
 <body>
@@ -772,11 +836,13 @@ function performSearch(forcedQuery = null) {
         }
 
         function openP(id) {
-            const m = moviesDB.find(x => x.id === id); if(!m) return;
-            currentMovie = m; currentEpisodeIndex = 0; 
-            
-            document.getElementById('dp-img').style.backgroundImage = `url('${m.poster}')`;
-            document.getElementById('dp-title').innerText = m.title; 
+    document.body.classList.add('no-scroll'); // <--- AJOUTE CETTE LIGNE ICI
+    const m = moviesDB.find(x => x.id === id); if(!m) return;
+    // ... le reste du code reste identique
+    currentMovie = m; currentEpisodeIndex = 0; 
+    
+    document.getElementById('dp-img').style.backgroundImage = `url('${m.poster}')`;
+    // ... etc ... document.getElementById('dp-title').innerText = m.title; 
             document.getElementById('dp-year').innerText = " - " + m.year;
             // --- MODIFICATION DEBUT : Gestion des tags cliquables ---
     const genreZone = document.getElementById('dp-genre');
@@ -1197,7 +1263,11 @@ function performSearch(forcedQuery = null) {
     window.scrollTo({top: 0, behavior: 'smooth'});
 }
 /* --- GESTION PROFIL ACTEUR (API TMDB) --- */
-
+function closeP() {
+    document.body.classList.remove('no-scroll'); // <--- AJOUTE CETTE LIGNE ICI
+    document.getElementById('player-overlay').style.display = 'none'; 
+    document.getElementById('video-container').innerHTML = ''; 
+}
 // Clé API publique (si elle bloque, inscris-toi sur TMDB pour avoir la tienne)
 const TMDB_API_KEY = 'c1aa675ecab2d06c2eb5101345951b6d'; 
 
@@ -1208,7 +1278,10 @@ async function openActorProfile(name, job = 'Acteur') {
     document.getElementById('ac-job').innerText = job;
     document.getElementById('ac-bio').innerText = "Recherche des infos sur TMDB...";
     document.getElementById('ac-photo').src = "https://via.placeholder.com/200x300?text=No+Image"; // Image par défaut
-
+function closeActor() {
+    document.body.classList.remove('no-scroll'); // <--- AJOUTE CETTE LIGNE ICI
+    document.getElementById('actor-overlay').style.display = 'none';
+}
     // 2. Chercher la personne sur TMDB (Internet)
     try {
         const searchUrl = `https://api.themoviedb.org/3/search/person?api_key=${TMDB_API_KEY}&language=fr-FR&query=${encodeURIComponent(name)}`;
