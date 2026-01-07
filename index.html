@@ -580,9 +580,18 @@ body.no-scroll {
     </style>
 </head>
 <body>
-<button onclick="resetAllData()" style="position:fixed; top:10px; left:10px; z-index:20000; background:red; color:white; border:none; padding:10px; cursor:pointer;">
-    ⚠️ RÉINITIALISER TOUT
+<button onclick="resetSite()" style="position:fixed; top:10px; left:10px; z-index:20000; background:red; color:white; border:2px solid white; padding:10px; font-weight:bold; cursor:pointer;">
+    ⚠️ RÉPARER LES IMAGES
 </button>
+
+<script>
+function resetSite() {
+    if(confirm("Cela va vider la mémoire du navigateur et forcer le rechargement des images depuis data.js. Continuer ?")) {
+        localStorage.removeItem('myCustomMovies'); // Supprime la sauvegarde Admin
+        location.reload(true); // Recharge la page en forçant le cache
+    }
+}
+</script>
 
 <script>
 function resetAllData() {
@@ -1589,6 +1598,7 @@ function closeActor() {
     </script>
 </body>
 </html>
+
 
 
 
