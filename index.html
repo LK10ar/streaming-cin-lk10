@@ -580,7 +580,18 @@ body.no-scroll {
     </style>
 </head>
 <body>
+<button onclick="resetAllData()" style="position:fixed; top:10px; left:10px; z-index:20000; background:red; color:white; border:none; padding:10px; cursor:pointer;">
+    ⚠️ RÉINITIALISER TOUT
+</button>
 
+<script>
+function resetAllData() {
+    if(confirm("ATTENTION : Cela va effacer toutes les modifications faites via le mode Admin et recharger le fichier data.js original. Continuer ?")) {
+        localStorage.removeItem('myCustomMovies'); // Efface la mémoire
+        location.reload(); // Recharge la page
+    }
+}
+</script>
    <div id="cover-page">
         <p>clique pour entrée...</p>
     </div>
@@ -1578,5 +1589,6 @@ function closeActor() {
     </script>
 </body>
 </html>
+
 
 
