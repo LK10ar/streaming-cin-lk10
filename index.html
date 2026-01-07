@@ -329,7 +329,13 @@ body.no-scroll {
 
         .tech-info { display: grid; grid-template-columns: auto 1fr; gap: 5px 20px; font-size: 12px; color: #aaa; } .ti-label { font-weight: bold; color: #ddd; } .ti-val { color: var(--primary); }
         .d-right { width: 120px; flex-shrink: 0; display: flex; flex-direction: column; align-items: center; gap: 10px; }
-        .vote-row { display: flex; gap: 10px; } 
+       /* --- MODIFICATION ICI --- */
+.vote-row { 
+    display: flex; 
+    align-items: center;     /* Centre verticalement le pouce par rapport au rond */
+    justify-content: center; /* Centre le tout horizontalement */
+    gap: 15px;               /* Espace propre entre le pouce et le rond */
+}
         .score-circle { 
             width: 50px; height: 50px; border-radius: 50%; 
             border: 3px solid #2ecc71; 
@@ -337,7 +343,14 @@ body.no-scroll {
             color: white; font-weight: bold; font-size: 16px; 
         } 
         .score-circle.bad { border-color: #e74c3c; color: #e74c3c; }
-        .vote-count { font-size: 10px; color: #555; }
+      /* --- MODIFICATION ICI --- */
+.vote-count { 
+    font-size: 10px; 
+    color: #555; 
+    text-align: center; /* Force le texte à être centré */
+    width: 100%;        /* Prend toute la largeur pour bien se centrer */
+    margin-top: 5px;    /* Un petit espace au-dessus */
+}
 
         /* --- LECTEUR BA --- */
         #trailer-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 3000; justify-content: center; align-items: center; }
@@ -577,6 +590,24 @@ body.no-scroll {
         height: 100%; /* Garde la hauteur pour l'alignement vertical */
     }
 }
+
+/* --- STYLE DU POUCE (NOTE) --- */
+/* --- MODIFICATION ICI --- */
+#dp-thumb {
+    font-size: 35px;
+    /* margin-right: 15px;  <-- ON SUPPRIME CETTE LIGNE */
+    transition: 0.3s;
+}
+
+/* Les couleurs */
+.thumb-good { color: #2ecc71; } /* Vert */
+.thumb-mid  { color: #f1c40f; } /* Jaune */
+.thumb-bad  { color: #e74c3c; } /* Rouge */
+
+/* Petite rotation pour le pouce jaune (style "moyen") */
+.thumb-rotate {
+    transform: rotate(90deg); /* Le met à l'horizontal */
+}
     </style>
 </head>
 <body>
@@ -722,9 +753,12 @@ function resetSite() {
                     <div class="tech-info"><div class="ti-label">Réalisateur:</div> <div class="ti-val" id="dp-dir">Director</div><div class="ti-label">Acteurs:</div> <div class="ti-val" id="dp-cast">Actors</div></div>
                 </div>
                 <div class="d-right">
-                    <div class="vote-row"><div class="score-circle" id="dp-score-detail">8.1</div></div>
-                    <div class="vote-count">Note</div>
-                </div>
+    <div class="vote-row">
+        <i id="dp-thumb" class="fas fa-thumbs-up"></i>
+        <div class="score-circle" id="dp-score-detail">8.1</div>
+    </div>
+    <div class="vote-count">Note</div>
+</div>
             </div>
         </div>
     </div>
@@ -1060,14 +1094,35 @@ function performSearch(forcedQuery = null) {
     });
     // --- MODIFICATION FIN ---
             
-            const ratingValue = m.rating || "-";
-            const scorePoster = document.getElementById('dp-score-poster');
-            const scoreDetail = document.getElementById('dp-score-detail');
-            scorePoster.innerText = ratingValue;
-            scoreDetail.innerText = ratingValue;
-            
-            if(m.rating && parseFloat(m.rating) < 5) scoreDetail.classList.add('bad');
-            else scoreDetail.classList.remove('bad');
+     // 5. Note & Pouce
+    const ratingValue = m.rating || "-";
+    document.getElementById('dp-score-poster').innerText = ratingValue;
+    const scoreDetail = document.getElementById('dp-score-detail');
+    scoreDetail.innerText = ratingValue;
+    
+    // Récupération de l'élément pouce
+    const thumbIcon = document.getElementById('dp-thumb');
+    
+    // On nettoie les anciennes classes
+    thumbIcon.className = 'fas'; 
+    scoreDetail.classList.remove('bad');
+
+    // Convertir la note en chiffre
+    const note = parseFloat(m.rating) || 0;
+
+    if (note >= 8) {
+        // --- DE 8 à 10 : VERT ---
+        thumbIcon.classList.add('fa-thumbs-up', 'thumb-good');
+    } 
+    else if (note >= 5) {
+        // --- DE 5 à 7.9 : JAUNE (Pouce sur le coté) ---
+        thumbIcon.classList.add('fa-thumbs-up', 'thumb-mid', 'thumb-rotate');
+    } 
+    else {
+        // --- MOINS DE 5 : ROUGE (Pouce en bas) ---
+        thumbIcon.classList.add('fa-thumbs-down', 'thumb-bad');
+        scoreDetail.classList.add('bad'); // Le cercle devient rouge aussi
+    }
 
             const desc = m.desc || "";
             const descEl = document.getElementById('dp-desc');
@@ -1600,4 +1655,3 @@ function closeActor() {
     </script>
 </body>
 </html>
-
