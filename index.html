@@ -592,15 +592,6 @@ function resetSite() {
     }
 }
 </script>
-
-<script>
-function resetAllData() {
-    if(confirm("ATTENTION : Cela va effacer toutes les modifications faites via le mode Admin et recharger le fichier data.js original. Continuer ?")) {
-        localStorage.removeItem('myCustomMovies'); // Efface la mémoire
-        location.reload(); // Recharge la page
-    }
-}
-</script>
    <div id="cover-page">
         <p>clique pour entrée...</p>
     </div>
@@ -682,10 +673,10 @@ function resetAllData() {
             <div class="controls-bar">
               <div class="ublock-box" style="background:#222; color:#aaa; font-size:13px; height: 38px; padding: 0 15px; border-radius: 4px; display: flex; align-items: center; justify-content: center; gap: 8px; border: 1px solid #333; overflow: hidden;">
     <i class="fas fa-info-circle"></i> 
-    <span class="ublock-text">Astuce : Installez <strong>AdBlock </strong> pour supprimer les publicités</span>
-    <a href="https://chromewebstore.google.com/detail/adblock-bloquez-les-publi/gighmmpiobklfepjocnamgkkbiglidom" target="_blank" title="Cliquez pour installer AdBlock" style="display: flex; align-items: center;">
-        <img src="asset/AdBlock.png" 
-             alt="Logo AdBlock" 
+    <span class="ublock-text">Astuce : Installez <strong>uBlock Origin</strong> pour supprimer les publicités</span>
+    <a href="https://ublockorigin.com/" target="_blank" title="Cliquez pour installer uBlock Origin" style="display: flex; align-items: center;">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/UBlock_Origin.svg/1200px-UBlock_Origin.svg.png" 
+             alt="Logo uBlock" 
              style="width: auto; height: 24px; vertical-align: middle; cursor: pointer; transition: 0.3s ease;" 
              onmouseover="this.style.transform='scale(1.2)'; this.style.filter='drop-shadow(0 0 5px var(--primary))';" 
              onmouseout="this.style.transform='scale(1)'; this.style.filter='none';">
@@ -1031,7 +1022,8 @@ function performSearch(forcedQuery = null) {
     currentMovie = m; currentEpisodeIndex = 0; 
     
     document.getElementById('dp-img').style.backgroundImage = `url('${m.poster}')`;
-    // ... etc ... document.getElementById('dp-title').innerText = m.title; 
+    // ... etc ... 
+    document.getElementById('dp-title').innerText = m.title; 
             document.getElementById('dp-year').innerText = " - " + m.year;
             // --- MODIFICATION DEBUT : Gestion des tags cliquables ---
     const genreZone = document.getElementById('dp-genre');
@@ -1598,7 +1590,3 @@ function closeActor() {
     </script>
 </body>
 </html>
-
-
-
-
