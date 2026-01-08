@@ -437,8 +437,7 @@ body.no-scroll {
             .d-center { width: 100%; text-align: center; }
             .d-title-row { justify-content: center; }
             .tech-info { grid-template-columns: 1fr; text-align: center; }
-            /* On remet en colonne (column) pour que le pouce et la note soient bien empilés et centrés */
-.d-right { width: 100%; flex-direction: column; align-items: center; margin-top: 15px; }
+            .d-right { width: 100%; flex-direction: row; justify-content: center; margin-top: 15px; }
             .controls-bar { justify-content: center; padding: 10px; gap: 10px; } .lang-select { width: 100%; }
         }
         @media (max-width: 480px) { .logo img { height: 50px; } .poster { height: 220px; } }
@@ -613,6 +612,7 @@ body.no-scroll {
 </head>
 <body>
 
+    
 <script>
 function resetSite() {
     if(confirm("Cela va vider la mémoire du navigateur et forcer le rechargement des images depuis data.js. Continuer ?")) {
@@ -1293,27 +1293,15 @@ function performSearch(forcedQuery = null) {
     }
 }
 
-        function setVideoContent(iframeCode) {
+    /* --- FONCTION VIDÉO CORRIGÉE (Sans blocage) --- */
+function setVideoContent(iframeCode) {
     const box = document.getElementById('video-container');
     
     if (iframeCode && iframeCode.trim() !== "") { 
-        // --- TENTATIVE DE BLOCAGE DE PUB (SANDBOX) ---
-        // On prend le code de l'iframe et on injecte l'attribut sandbox
-        // On autorise les scripts (pour que la vidéo marche) mais on ne met PAS 'allow-popups'
-        let secureIframe = iframeCode;
-        
-        // Si c'est une iframe classique, on tente de la sécuriser
-        if(secureIframe.includes('<iframe')) {
-            // On ajoute l'attribut sandbox juste après <iframe
-            // allow-scripts : permet au lecteur de fonctionner
-            // allow-same-origin : permet de charger la vidéo
-            // allow-presentation : permet le plein écran
-            // allow-forms : permet de cliquer sur play
-            // NOTA : On ne met PAS "allow-popups" pour tenter de bloquer les pubs
-            secureIframe = secureIframe.replace('<iframe', '<iframe sandbox="allow-scripts allow-same-origin allow-presentation allow-forms"');
-        }
-
-        box.innerHTML = secureIframe; 
+        // --- CORRECTION IMPORTANTE ---
+        // On ne modifie PAS le code (pas de sandbox).
+        // On l'injecte tel quel pour que le lecteur accepte de se lancer.
+        box.innerHTML = iframeCode; 
     } 
     else { 
         box.innerHTML = '<div style="color:white; text-align:center; padding-top:200px;"><i class="fas fa-exclamation-circle"></i> Lien non disponible pour cette langue/serveur.</div>'; 
@@ -1498,13 +1486,11 @@ function toggleAdminAuth(forceUnlock = false) {
             if(isEditing && currentMovie.id === editingId) { openP(editingId); }
             updateGrid();
             
-            // MODIFICATION ICI : Affiche le code uniquement si c'est un nouvel ajout
-            if(isEditing) {
-                alert("Modifications enregistrées !");
-            } else {
-                exportSingleMovie(movieData);
-            }
-        }
+           // NOUVEAU CODE (Affiche le code tout le temps)
+            alert(isEditing ? "Modification réussie ! Copie le nouveau code ci-dessous." : "Création réussie ! Copie le code ci-dessous.");
+            exportSingleMovie(movieData); // On force l'affichage du code dans TOUS les cas
+        } // <--- C'EST CETTE ACCOLADE QUI MANQUAIT !
+
         function deleteMovie() {
             if(!isEditing || !editingId) return;
             if(!confirm("Êtes-vous sûr de vouloir supprimer ce film/série ?")) return;
@@ -1656,4 +1642,3 @@ function closeActor() {
     </script>
 </body>
 </html>
-
