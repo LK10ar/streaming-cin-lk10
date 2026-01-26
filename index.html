@@ -3,116 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<meta http-equiv="Pragma" content="no-cache">
-<meta http-equiv="Expires" content="0">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ciné LK10</title>
      <link rel="icon" type="image/png" href="asset/logolk10.png"> 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         /* --- EMPÊCHER LE SCROLL DE L'ARRIÈRE-PLAN --- */
-body.no-scroll {
-    overflow: hidden; /* Coupe tout ce qui dépasse */
-}
+        body.no-scroll { overflow: hidden; }
+
         /* --- STYLE PROFIL ACTEUR --- */
-#actor-overlay {
-    display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0,0,0,0.95); z-index: 5000;
-    justify-content: center; align-items: flex-start; overflow-y: auto; padding: 40px 20px;
-}
-
-.actor-modal {
-    background: #151515; width: 900px; max-width: 100%; position: relative;
-    border-radius: 10px; padding: 30px; box-shadow: 0 0 30px rgba(0,0,0,0.8);
-    border: 1px solid #333; margin-top: 20px;
-}
-
-.actor-close-btn {
-    position: absolute; top: 15px; right: 15px; background: none; border: none;
-    color: #ffde00; font-size: 30px; cursor: pointer; transition: 0.3s;
-}
-.actor-close-btn:hover { color: var(--primary); transform: rotate(90deg); }
-
-.actor-header { display: flex; gap: 30px; margin-bottom: 30px; border-bottom: 1px solid #333; padding-bottom: 30px; }
-.actor-photo-box img { 
-    width: 200px; height: 300px; object-fit: cover; border-radius: 8px; 
-    box-shadow: 0 5px 15px rgba(0,0,0,0.5); border: 2px solid #333;
-}
-
-.actor-info-box { flex: 1; }
-.actor-info-box h2 { color: var(--primary); font-size: 32px; margin-bottom: 10px; }
-.ac-meta { color: #888; font-size: 14px; margin-bottom: 20px; }
-.ac-bio { color: #ccc; font-size: 14px; line-height: 1.6; max-height: 200px; overflow-y: auto; }
-/* --- SCROLLBAR PERSONNALISÉE (BIO ACTEUR) --- */
-
-/* 1. La "piste" (le fond de la barre) */
-.ac-bio::-webkit-scrollbar {
-    width: 8px; /* Largeur de la barre */
-}
-
-.ac-bio::-webkit-scrollbar-track {
-    background: #111; /* Fond noir très foncé */
-    border-radius: 4px;
-}
-
-/* 2. Le "pouce" (la partie qui bouge) */
-.ac-bio::-webkit-scrollbar-thumb {
-    background: var(--primary); /* Ton jaune (#ffde00) */
-    border-radius: 4px; /* Bords arrondis */
-    border: 2px solid #111; /* Petite bordure noire pour un effet "flottant" */
-}
-
-/* 3. Au survol de la souris */
-.ac-bio::-webkit-scrollbar-thumb:hover {
-    background: #e6c800; /* Un jaune un peu plus foncé au survol */
-}
-.actor-filmography h3 { color: white; border-left: 4px solid var(--primary); padding-left: 10px; margin-bottom: 20px; }
-
-/* Mobile */
-@media (max-width: 768px) {
-    .actor-header { flex-direction: column; align-items: center; text-align: center; }
-    .actor-photo-box img { width: 150px; height: 225px; }
-}
+        #actor-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 5000; justify-content: center; align-items: flex-start; overflow-y: auto; padding: 40px 20px; }
+        .actor-modal { background: #151515; width: 900px; max-width: 100%; position: relative; border-radius: 10px; padding: 30px; box-shadow: 0 0 30px rgba(0,0,0,0.8); border: 1px solid #333; margin-top: 20px; }
+        .actor-close-btn { position: absolute; top: 15px; right: 15px; background: none; border: none; color: #ffde00; font-size: 30px; cursor: pointer; transition: 0.3s; }
+        .actor-close-btn:hover { color: var(--primary); transform: rotate(90deg); }
+        .actor-header { display: flex; gap: 30px; margin-bottom: 30px; border-bottom: 1px solid #333; padding-bottom: 30px; }
+        .actor-photo-box img { width: 200px; height: 300px; object-fit: cover; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.5); border: 2px solid #333; }
+        .actor-info-box { flex: 1; }
+        .actor-info-box h2 { color: var(--primary); font-size: 32px; margin-bottom: 10px; }
+        .ac-meta { color: #888; font-size: 14px; margin-bottom: 20px; }
+        .ac-bio { color: #ccc; font-size: 14px; line-height: 1.6; max-height: 200px; overflow-y: auto; }
+        .ac-bio::-webkit-scrollbar { width: 8px; }
+        .ac-bio::-webkit-scrollbar-track { background: #111; border-radius: 4px; }
+        .ac-bio::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 4px; border: 2px solid #111; }
+        .ac-bio::-webkit-scrollbar-thumb:hover { background: #e6c800; }
+        .actor-filmography h3 { color: white; border-left: 4px solid var(--primary); padding-left: 10px; margin-bottom: 20px; }
+        @media (max-width: 768px) { .actor-header { flex-direction: column; align-items: center; text-align: center; } .actor-photo-box img { width: 150px; height: 225px; } }
+        
         /* --- LIENS ACTEURS & REALISATEUR --- */
-.person-link {
-    color: #ccc; /* Couleur de base */
-    cursor: pointer;
-    transition: 0.2s;
-    margin-right: 5px; /* Petit espace après la virgule */
-}
-
-.person-link:hover {
-    color: var(--primary) !important; /* Devient jaune */
-    text-decoration: underline;
-}
+        .person-link { color: #ccc; cursor: pointer; transition: 0.2s; margin-right: 5px; }
+        .person-link:hover { color: var(--primary) !important; text-decoration: underline; }
+        
         /* --- BOUTONS GENRE DANS DETAILS --- */
-/* On cible les spans générés dynamiquement dans la zone d-meta */
-.d-meta span.genre-tag {
-    cursor: pointer;
-    transition: 0.2s;
-    display: inline-block; /* Pour bien gérer les marges */
-}
-
-.d-meta span.genre-tag:hover {
-    background-color: var(--primary) !important; /* Devient jaune */
-    color: black !important; /* Texte noir */
-    transform: translateY(-2px); /* Petit effet de rebond */
-}
+        .d-meta span.genre-tag { cursor: pointer; transition: 0.2s; display: inline-block; }
+        .d-meta span.genre-tag:hover { background-color: var(--primary) !important; color: black !important; transform: translateY(-2px); }
+        
         :root { --primary: #ffde00; --dark: #151515; --light: #222; --text: #eee; --grey: #aaa; --danger: #e74c3c; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Arial', sans-serif; }
         
         html { height: 100%; }
-        body { 
-            background-color: var(--dark); color: var(--text); position: relative; 
-            display: flex; flex-direction: column; min-height: 100vh; padding-bottom: 0; margin: 0;
-        }
+        body { background-color: var(--dark); color: var(--text); position: relative; display: flex; flex-direction: column; min-height: 100vh; padding-bottom: 0; margin: 0; }
 
         /* --- HEADER --- */
-        header { 
-            background-color: #1b1b1b; padding: 0 20px; height: 70px; display: flex; align-items: center; 
-            justify-content: space-between; border-bottom: 3px solid var(--primary); position: sticky; top: 0; 
-            z-index: 1000; box-shadow: 0 5px 15px rgba(0,0,0,0.5); flex-shrink: 0;
-        }
+        header { background-color: #1b1b1b; padding: 0 20px; height: 70px; display: flex; align-items: center; justify-content: space-between; border-bottom: 3px solid var(--primary); position: sticky; top: 0; z-index: 1000; box-shadow: 0 5px 15px rgba(0,0,0,0.5); flex-shrink: 0; }
         .logo { display: flex; align-items: center; cursor: pointer; height: 100%; z-index: 1002; }
         .logo img { height: 65px; width: auto; }
 
@@ -120,33 +54,11 @@ body.no-scroll {
         nav { height: 100%; display: flex; align-items: center; }
         .nav-links { display: flex; height: 100%; list-style: none; margin: 0; padding: 0; align-items: center; }
         .nav-item { position: relative; height: 100%; display: flex; align-items: center; }
-        
-        .nav-link { 
-            cursor: pointer; font-weight: bold; padding: 0 15px; font-size: 14px; 
-            display: flex; align-items: center; gap: 6px; color: white; text-decoration: none; 
-            ; transition: 0.3s; 
-        }
+        .nav-link { cursor: pointer; font-weight: bold; padding: 0 15px; font-size: 14px; display: flex; align-items: center; gap: 6px; color: white; text-decoration: none; transition: 0.3s; }
         .nav-link:hover, .nav-link.active { color: var(--primary);  }
-
-        .dropdown-content {
-            display: none; position: absolute; top: 70px; left: 0; background-color: #1a1a1a;
-            min-width: 600px; box-shadow: 0 8px 16px rgba(0,0,0,0.8); z-index: 1001;
-            border-top: 2px solid var(--primary); padding: 20px; border-radius: 0 0 5px 5px; cursor: default;
-        }
-        /* --- CORRECTION DU HOVER (PONT INVISIBLE) --- */
-.dropdown-content::before {
-    content: "";
-    position: absolute;
-    /* On remonte de 20px pour coller au bouton "Films" */
-    top: -20px; 
-    left: 0;
-    width: 100%;
-    /* On donne une hauteur de 20px à ce pont invisible */
-    height: 20px; 
-    background: transparent; /* Il reste invisible à l'oeil nu */
-}
+        .dropdown-content { display: none; position: absolute; top: 70px; left: 0; background-color: #1a1a1a; min-width: 600px; box-shadow: 0 8px 16px rgba(0,0,0,0.8); z-index: 1001; border-top: 2px solid var(--primary); padding: 20px; border-radius: 0 0 5px 5px; cursor: default; }
+        .dropdown-content::before { content: ""; position: absolute; top: -20px; left: 0; width: 100%; height: 20px; background: transparent; }
         @media (min-width: 993px) { .nav-item:hover .dropdown-content { display: flex; gap: 30px; animation: fadeIn 0.2s ease; } }
-
         .drop-column { flex: 1; min-width: 150px; }
         .drop-column h3 { color: var(--primary); font-size: 13px; text-transform: uppercase; border-bottom: 1px solid #333; padding-bottom: 8px; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
         .drop-column a { color: #ccc; padding: 6px 0; text-decoration: none; display: block; font-size: 13px; transition: 0.2s; cursor: pointer; }
@@ -161,78 +73,32 @@ body.no-scroll {
         .add-btn-header { background-color: #2ecc71; color: white; border: none; padding: 8px 15px; border-radius: 4px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 5px; }
         .burger-menu { display: none; font-size: 24px; cursor: pointer; color: white; margin-left: 15px; }
 
-/* --- BOUTON DECONNEXION ADMIN --- */
-.logout-btn-header { 
-    background-color: #e74c3c; /* Rouge */
-    color: white; 
-    border: none; 
-    padding: 8px 15px; 
-    border-radius: 4px; 
-    font-weight: bold; 
-    cursor: pointer; 
-    display: flex; 
-    align-items: center; 
-    gap: 5px; 
-    margin-right: 10px; /* Espace entre le rouge et le vert */
-    transition: 0.3s;
-}
-
-.logout-btn-header:hover { 
-    background-color: #c0392b; /* Rouge plus foncé au survol */
-    transform: scale(1.05);
-}
+        /* --- BOUTON DECONNEXION ADMIN --- */
+        .logout-btn-header { background-color: #e74c3c; color: white; border: none; padding: 8px 15px; border-radius: 4px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 5px; margin-right: 10px; transition: 0.3s; }
+        .logout-btn-header:hover { background-color: #c0392b; transform: scale(1.05); }
 
         /* --- CONTENU --- */
         body:not(.admin-active) .admin-btn { display: none !important; }
-     .main-container { 
-    max-width: 1400px; 
-    margin: 0 auto; 
-    padding: 20px; 
-    flex: 1; 
-    width: 100%; 
-    min-height: auto; 
-    
-    /* --- AJOUTS POUR STABILISER LA PAGINATION --- */
-    display: flex;          /* Active le mode Flexbox */
-    flex-direction: column; /* Organise les éléments (titre, grille, pagination) en colonne */
-}
+        .main-container { max-width: 1400px; margin: 0 auto; padding: 20px; flex: 1; width: 100%; min-height: auto; display: flex; flex-direction: column; }
         .section-title { border-bottom: 2px solid #333; padding-bottom: 10px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
         .tab-btn { background: var(--dark); color: var(--primary); border: none; border-top: 2px solid var(--primary); padding: 10px 20px; font-weight: bold; font-size: 15px; }
         
         .movie-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 15px; }
-       .movie-card { background: var(--light); border-radius: 4px; overflow: hidden; position: relative; cursor: pointer; transition: transform 0.2s; display: none; }
+        .movie-card { background: var(--light); border-radius: 4px; overflow: hidden; position: relative; cursor: pointer; transition: transform 0.2s; display: none; }
         .movie-card:hover { transform: scale(1.05); z-index: 10; box-shadow: 0 0 15px rgba(255, 222, 0, 0.3); }
         .poster { width: 100%; height: 260px; background-size: cover; background-position: center; position: relative; background-color: #333; }
         
         /* BADGES SUR LA CARTE */
         .badge { position: absolute; padding: 2px 4px; font-size: 10px; font-weight: bold; border-radius: 2px; z-index: 2; }
         .b-hd { top: 5px; left: 5px; background: black; border: 1px solid #555; color: white; } 
-        /* Déplacé à gauche en dessous de HD */
         .b-type { top: 25px; left: 5px; background: var(--primary); color: black; right: auto; }
         
-        /* NOTE SUR LA CARTE (NOUVEAU STYLE) */
-        .grid-rating {
-            position: absolute; top: 5px; right: 5px;
-            background: rgba(0,0,0,0.8); color: white;
-            font-size: 11px; font-weight: bold;
-            padding: 2px 5px; border-radius: 3px;
-            border: 1px solid #fff;
-            z-index: 2;
-        }
+        /* NOTE SUR LA CARTE */
+        .grid-rating { position: absolute; top: 5px; right: 5px; background: rgba(0,0,0,0.8); color: white; font-size: 11px; font-weight: bold; padding: 2px 5px; border-radius: 3px; border: 1px solid #fff; z-index: 2; }
         
-
         .movie-info { padding: 8px; text-align: center; } 
         .movie-title { font-size: 13px; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-       .pagination { 
-    display: flex; 
-    justify-content: center; 
-    gap: 5px; 
-    flex-wrap: wrap;
-    
-    /* --- MODIFICATION ICI --- */
-    margin-top: auto;  /* Pousse la pagination tout en bas du conteneur */
-    padding-top: 40px; /* Garde un petit espace esthétique avec les films */
-}
+        .pagination { display: flex; justify-content: center; gap: 5px; flex-wrap: wrap; margin-top: auto; padding-top: 40px; }
         .page-btn { background-color: #333; color: #fff; border: none; width: 35px; height: 35px; font-size: 14px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.3s;} 
         .page-btn.active { background-color: var(--primary); color: black; } 
         .page-btn:hover:not(.active) { background-color: #444; }
@@ -242,27 +108,8 @@ body.no-scroll {
         .player-content { width: 100%; max-width: 1200px; margin: 40px auto; background: #111; box-shadow: 0 0 20px rgba(0,0,0,0.8); position: relative; border-radius: 5px; }
         .player-actions { position: absolute; top: -40px; right: 0; display: flex; gap: 10px; }
         
-        /* --- MODIFICATION : CROIX JAUNE STYLE ACTEUR --- */
-.close-corner {
-    background: none; /* Plus de fond rouge */
-    border: none;     /* Plus de bordure blanche */
-    color: #ffde00;      /* Couleur grise par défaut, comme sur la fiche acteur */
-    font-size: 30px;  /* Taille de la croix */
-    cursor: pointer;
-    transition: 0.3s;
-    position: absolute;
-    top: 15px;        /* Position ajustée pour être dans le coin */
-    right: 15px;      /* Position ajustée */
-    z-index: 3000;
-    display: flex; align-items: center; justify-content: center;
-    width: auto; height: auto; border-radius: 0; font-weight: normal;
-}
-
-.close-corner:hover {
-    background: none;       /* Pas de fond au survol */
-    color: var(--primary);  /* Devient JAUNE au survol */
-    transform: rotate(90deg); /* Petit effet de rotation sympa */
-}
+        .close-corner { background: none; border: none; color: #ffde00; font-size: 30px; cursor: pointer; transition: 0.3s; position: absolute; top: 15px; right: 15px; z-index: 3000; display: flex; align-items: center; justify-content: center; width: auto; height: auto; border-radius: 0; font-weight: normal; }
+        .close-corner:hover { background: none; color: var(--primary); transform: rotate(90deg); }
         
         .edit-btn-player { background: #3498db; color: white; border: 2px solid #fff; width: auto; height: 30px; border-radius: 15px; padding: 0 15px; cursor: pointer; font-weight: bold; align-items: center; justify-content: center; font-size: 12px; gap: 5px; position: absolute; top: -40px; right: 40px; }
         .edit-btn-player:hover { background: white; color: #3498db; }
@@ -285,22 +132,9 @@ body.no-scroll {
         .details-area { display: flex; padding: 25px; gap: 30px; background: #111; color: #ddd; align-items: flex-start; border-top: 1px solid #222; flex-wrap: wrap; }
         
         .d-left { width: 180px; flex-shrink: 0; } 
-        .d-poster-img { 
-            width: 100%; height: 260px; background-size: cover; border-radius: 4px; 
-            box-shadow: 0 0 10px black; position: relative; 
-        }
+        .d-poster-img { width: 100%; height: 260px; background-size: cover; border-radius: 4px; box-shadow: 0 0 10px black; position: relative; }
         
-        .score-badge {
-            position: absolute; top: 5px; right: 5px;
-            background: rgba(0, 0, 0, 0.8);
-            color: #fff;
-            border: 1px solid var(--primary);
-            width: 35px; height: 35px;
-            border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            font-weight: bold; font-size: 13px;
-            z-index: 5;
-        }
+        .score-badge { position: absolute; top: 5px; right: 5px; background: rgba(0, 0, 0, 0.8); color: #fff; border: 1px solid var(--primary); width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 13px; z-index: 5; }
 
         .btn-trailer { display: block; width: 100%; background: #1a1a1a; color: var(--primary); border: 1px solid #333; padding: 10px; margin-top: 10px; text-align: center; font-size: 12px; font-weight: bold; cursor: pointer; transition: 0.3s;} .btn-trailer:hover { border-color: var(--primary); background: var(--primary); color: black; }
         
@@ -309,48 +143,17 @@ body.no-scroll {
         .d-title { font-size: 24px; color: white; font-weight: bold; } .d-year { font-size: 24px; color: #ccc; font-weight: normal; }
         .d-meta { font-size: 12px; color: #888; margin-bottom: 15px; } .d-meta span { background: #333; color: white; padding: 1px 4px; border-radius: 2px; margin-right: 5px; }
         
-        .d-desc { 
-            font-size: 14px; line-height: 1.5; color: #ccc; margin-bottom: 20px; font-style: italic; 
-            overflow: hidden; 
-            transition: max-height 0.3s ease;
-        }
-        .d-desc.clamped {
-            display: -webkit-box;
-            -webkit-line-clamp: 3; 
-            -webkit-box-orient: vertical;
-        }
-        .read-more-btn {
-            display: none;
-            background: none; border: none; color: var(--primary); 
-            font-weight: bold; font-size: 12px; cursor: pointer; 
-            margin-top: -15px; margin-bottom: 15px; padding: 0;
-        }
+        .d-desc { font-size: 14px; line-height: 1.5; color: #ccc; margin-bottom: 20px; font-style: italic; overflow: hidden; transition: max-height 0.3s ease; }
+        .d-desc.clamped { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; }
+        .read-more-btn { display: none; background: none; border: none; color: var(--primary); font-weight: bold; font-size: 12px; cursor: pointer; margin-top: -15px; margin-bottom: 15px; padding: 0; }
         .read-more-btn:hover { text-decoration: underline; }
 
         .tech-info { display: grid; grid-template-columns: auto 1fr; gap: 5px 20px; font-size: 12px; color: #aaa; } .ti-label { font-weight: bold; color: #ddd; } .ti-val { color: var(--primary); }
         .d-right { width: 120px; flex-shrink: 0; display: flex; flex-direction: column; align-items: center; gap: 10px; }
-       /* --- MODIFICATION ICI --- */
-.vote-row { 
-    display: flex; 
-    align-items: center;     /* Centre verticalement le pouce par rapport au rond */
-    justify-content: center; /* Centre le tout horizontalement */
-    gap: 15px;               /* Espace propre entre le pouce et le rond */
-}
-        .score-circle { 
-            width: 50px; height: 50px; border-radius: 50%; 
-            border: 3px solid #2ecc71; 
-            display: flex; align-items: center; justify-content: center; 
-            color: white; font-weight: bold; font-size: 16px; 
-        } 
+        .vote-row { display: flex; align-items: center; justify-content: center; gap: 15px; }
+        .score-circle { width: 50px; height: 50px; border-radius: 50%; border: 3px solid #2ecc71; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 16px; } 
         .score-circle.bad { border-color: #e74c3c; color: #e74c3c; }
-      /* --- MODIFICATION ICI --- */
-.vote-count { 
-    font-size: 10px; 
-    color: #555; 
-    text-align: center; /* Force le texte à être centré */
-    width: 100%;        /* Prend toute la largeur pour bien se centrer */
-    margin-top: 5px;    /* Un petit espace au-dessus */
-}
+        .vote-count { font-size: 10px; color: #555; text-align: center; width: 100%; margin-top: 5px; }
 
         /* --- LECTEUR BA --- */
         #trailer-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 3000; justify-content: center; align-items: center; }
@@ -424,11 +227,7 @@ body.no-scroll {
             .poster { height: 200px; } .movie-title { font-size: 12px; }
             .player-content { margin: 0; width: 100%; height: 100%; border-radius: 0; }
             
-            .close-corner { 
-                position: fixed; top: 10px; right: 10px; left: auto;
-                z-index: 3000; border: 2px solid #ffffff00;
-            }
-            
+            .close-corner { position: fixed; top: 10px; right: 10px; left: auto; z-index: 3000; border: 2px solid #ffffff00; }
             .edit-btn-player { top: 10px; left: 10px; right: auto; z-index: 50; position: fixed; }
             .video-box { margin-top: 40px; } 
             
@@ -462,157 +261,169 @@ body.no-scroll {
             font-family: 'Arial', sans-serif;
         }
 
-        .footer-discord-link {
-            display: flex;
-            align-items: center;
-            transition: transform 0.3s ease;
-        }
-
-        .footer-discord-link img {
-            height: 50px; /* Taille du logo */
-            width: auto;
-            cursor: pointer;
-        }
-
-        .footer-discord-link:hover {
-            transform: scale(1.1); /* Petit effet de zoom au survol */
-            filter: drop-shadow(0 0 5px var(--primary)); /* Lueur jaune au survol */
-        }
-        /* --- SCROLLBAR PERSONNALISÉE (GLOBAL) --- */
-
-/* Largeur de la barre de défilement */
-::-webkit-scrollbar {
-    width: 10px; /* Un peu plus large pour être bien visible */
-}
-
-/* Fond de la barre (la piste) */
-::-webkit-scrollbar-track {
-    background: #151515; /* Couleur de fond sombre du site */
-    border-left: 1px solid #333; /* Séparation subtile */
-}
-
-/* Le curseur (la partie qui bouge) */
-::-webkit-scrollbar-thumb {
-    background: var(--primary); /* Votre jaune (#ffde00) */
-    border-radius: 5px; /* Arrondi pour un look moderne */
-    border: 2px solid #151515; /* Bordure interne pour détacher le curseur du fond */
-}
-
-/* Couleur du curseur au survol */
-::-webkit-scrollbar-thumb:hover {
-    background: #e6c800; /* Jaune légèrement plus foncé au survol */
-}
-/* Adaptation Mobile pour la barre uBlock */
-@media (max-width: 768px) {
-    .ublock-box {
-        height: auto !important; /* Laisse la hauteur s'adapter au texte */
-        padding: 10px !important; /* Un peu plus d'espace */
-        flex-direction: row; /* Garde les éléments sur une ligne si possible */
-        flex-wrap: wrap; /* Permet de passer à la ligne si c'est trop long */
-        line-height: 1.4;
-    }
-    
-    .ublock-text {
-        font-size: 11px; /* Réduit un peu le texte pour qu'il rentre mieux */
-        flex: 1; /* Le texte prend toute la place disponible */
-        text-align: center;
-    }
-}
-
-/* --- PAGE D'ACCUEIL / COVER --- */
-/* --- PAGE D'ACCUEIL / COVER --- */
-#cover-page {
-    position: fixed; 
-    top: 0; 
-    left: 0; 
-    width: 100%; 
-    height: 100%; 
-    background-color: black; 
-    
-    /* MODIFICATION ICI : On passe à 10000 pour être SUR le cadenas (qui est à 9999) */
-    z-index: 10000;
-    
-    display: flex; 
-    justify-content: center; 
-    align-items: center;
-    transition: opacity 0.5s ease-out; 
-}
-
-/* Le texte "clique pour entrée..." style NÉON */
-#cover-page p {
-    font-size: 2em; 
-    font-weight: bold;
-    text-transform: uppercase; 
-    color: #ffde00; /* Jaune */
-    padding: 20px 40px;
-    border: 4px solid #ffde00; /* Bordure jaune */
-    border-radius: 10px;
-    cursor: pointer;
-    
-    /* L'effet de lumière (Glow) */
-    box-shadow: 0 0 15px #ffde00, inset 0 0 15px #ffde00;
-    text-shadow: 0 0 10px #ffde00;
-    
-    /* Animation */
-    animation: neon-pulse 1.5s infinite alternate;
-}
-
-@keyframes neon-pulse {
-    from {
-        box-shadow: 0 0 10px #ffde00, inset 0 0 10px #ffde00;
-        opacity: 1;
-    }
-    to {
-        box-shadow: 0 0 25px #ffde00, inset 0 0 25px #ffde00;
-        opacity: 0.6;
-    }
-}
-/* --- RESPONSIVE COVER PAGE (MOBILE & TABLETTE) --- */
-@media (max-width: 768px) {
-    #cover-page p {
-        font-size: 1.2em;       /* Texte plus petit (au lieu de 2em) */
-        padding: 15px 25px;     /* Marges internes réduites */
-        border-width: 3px;      /* Bordure un peu plus fine pour l'élégance */
-        max-width: 85%;         /* La boîte ne dépassera jamais 85% de la largeur de l'écran */
-        text-align: center;     /* Centre le texte si jamais il passe sur 2 lignes */
+        .footer-discord-link { display: flex; align-items: center; transition: transform 0.3s ease; }
+        .footer-discord-link img { height: 50px; width: auto; cursor: pointer; }
+        .footer-discord-link:hover { transform: scale(1.1); filter: drop-shadow(0 0 5px var(--primary)); }
         
-        /* On réduit légèrement l'intensité du néon pour ne pas éblouir sur petit écran */
-        box-shadow: 0 0 10px #ffde00, inset 0 0 10px #ffde00; 
+        /* --- SCROLLBAR PERSONNALISÉE (GLOBAL) --- */
+        ::-webkit-scrollbar { width: 10px; }
+        ::-webkit-scrollbar-track { background: #151515; border-left: 1px solid #333; }
+        ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 5px; border: 2px solid #151515; }
+        ::-webkit-scrollbar-thumb:hover { background: #e6c800; }
+
+        /* Adaptation Mobile pour la barre uBlock */
+        @media (max-width: 768px) {
+            .ublock-box { height: auto !important; padding: 10px !important; flex-direction: row; flex-wrap: wrap; line-height: 1.4; }
+            .ublock-text { font-size: 11px; flex: 1; text-align: center; }
+        }
+
+        /* --- PAGE D'ACCUEIL / COVER --- */
+        #cover-page {
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            background-color: black; 
+            z-index: 10000;
+            display: flex; 
+            justify-content: center; 
+            align-items: center;
+            transition: opacity 0.5s ease-out; 
+        }
+
+        #cover-page p {
+            font-size: 2em; 
+            font-weight: bold;
+            text-transform: uppercase; 
+            color: #ffde00; 
+            padding: 20px 40px;
+            border: 4px solid #ffde00; 
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 0 0 15px #ffde00, inset 0 0 15px #ffde00;
+            text-shadow: 0 0 10px #ffde00;
+            animation: neon-pulse 1.5s infinite alternate;
+        }
+
+        @keyframes neon-pulse {
+            from { box-shadow: 0 0 10px #ffde00, inset 0 0 10px #ffde00; opacity: 1; }
+            to { box-shadow: 0 0 25px #ffde00, inset 0 0 25px #ffde00; opacity: 0.6; }
+        }
+
+        @media (max-width: 768px) {
+            #cover-page p {
+                font-size: 1.2em; 
+                padding: 15px 25px; 
+                border-width: 3px; 
+                max-width: 85%; 
+                text-align: center; 
+                box-shadow: 0 0 10px #ffde00, inset 0 0 10px #ffde00; 
+            }
+        }
+
+        @media (min-width: 993px) {
+            #main-nav { position: absolute; left: 50%; transform: translateX(-50%); height: 100%; }
+        }
+
+        /* --- STYLE DU POUCE (NOTE) --- */
+        #dp-thumb { font-size: 35px; transition: 0.3s; }
+        .thumb-good { color: #2ecc71; } /* Vert */
+        .thumb-mid  { color: #f1c40f; } /* Jaune */
+        .thumb-bad  { color: #e74c3c; } /* Rouge */
+        .thumb-rotate { transform: rotate(90deg); }
+
+        /* --- STYLE POP-UP DISCORD --- */
+        #discord-overlay {
+            display: none; 
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.95); 
+            z-index: 9998; 
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .discord-modal {
+            background: #151515;
+            border: 2px solid var(--primary); 
+            padding: 40px;
+            border-radius: 10px;
+            text-align: center;
+            width: 500px;
+            max-width: 90%;
+            box-shadow: 0 0 30px rgba(255, 222, 0, 0.2);
+            position: relative;
+        }
+
+        .discord-icon-box { font-size: 50px; color: #5865F2; margin-bottom: 20px; }
+        .discord-modal h2 { color: var(--primary); margin-bottom: 15px; font-size: 24px; text-transform: uppercase; }
+        .discord-modal p { color: #ccc; font-size: 14px; margin-bottom: 30px; line-height: 1.6; }
+        
+        /* CORRECTION ICI : On retire onclick="closeDiscordOnly()" */
+        .btn-join-discord { display: block; width: 100%; background-color: #5865F2; color: white; padding: 15px; border-radius: 5px; text-decoration: none; font-weight: bold; font-size: 16px; margin-bottom: 15px; transition: 0.3s; border: none; cursor: pointer; }
+        
+        .btn-join-discord:hover { background-color: #4752c4; transform: scale(1.02); }
+        .btn-access-site { background: transparent; border: 1px solid #333; color: #888; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-size: 12px; transition: 0.3s; }
+        .btn-access-site:hover { color: white; border-color: white; }
+
+        /* --- STYLE FORMULAIRE CODE --- */
+        .access-form { display: flex; gap: 10px; margin-top: 20px; }
+        #access-code-input { flex: 1; padding: 10px; border-radius: 5px; border: 1px solid #333; background: #222; color: white; outline: none; text-align: center; font-weight: bold; }
+        #access-code-input:focus { border-color: var(--primary); }
+        .btn-validate-code { background: #333; color: white; border: none; padding: 0 20px; border-radius: 5px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        .btn-validate-code:hover { background: var(--primary); color: black; }
+
+        /* --- STYLE DIAMANT VIP --- */
+        #vip-diamond {
+            display: none; 
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            font-size: 40px;
+            color: #ff69b4; 
+            z-index: 9000;
+            cursor: default;
+            filter: drop-shadow(0 0 10px #ff69b4);
+            animation: floatDiamond 3s ease-in-out infinite;
+        }
+
+        @keyframes floatDiamond {
+            0%, 100% { transform: translateY(0); filter: drop-shadow(0 0 10px #ff69b4); }
+            50% { transform: translateY(-10px); filter: drop-shadow(0 0 20px #ff69b4); }
+        }
+
+        /* --- FIX RESPONSIVE POP-UP MOBILE --- */
+@media (max-width: 768px) {
+    /* Le formulaire passe en colonne (vertical) */
+    .access-form {
+        flex-direction: column;
+        gap: 10px;
     }
-}
 
-/* --- CENTRAGE PARFAIT DU MENU (UNIQUEMENT SUR PC) --- */
-@media (min-width: 993px) {
-    #main-nav {
-        position: absolute;
-        left: 50%;
-        transform: translateX(-50%);
-        height: 100%; /* Garde la hauteur pour l'alignement vertical */
+    /* Le champ de texte prend 100% de la largeur */
+    #access-code-input {
+        width: 100%;
+        margin: 0; /* On gère l'espace via le gap du parent */
     }
-}
 
-/* --- STYLE DU POUCE (NOTE) --- */
-/* --- MODIFICATION ICI --- */
-#dp-thumb {
-    font-size: 35px;
-    /* margin-right: 15px;  <-- ON SUPPRIME CETTE LIGNE */
-    transition: 0.3s;
-}
+    /* Le bouton prend 100% de la largeur */
+    .btn-validate-code {
+        width: 100%;
+        padding: 12px 0; /* Un peu plus haut pour le tactile */
+    }
 
-/* Les couleurs */
-.thumb-good { color: #2ecc71; } /* Vert */
-.thumb-mid  { color: #f1c40f; } /* Jaune */
-.thumb-bad  { color: #e74c3c; } /* Rouge */
-
-/* Petite rotation pour le pouce jaune (style "moyen") */
-.thumb-rotate {
-    transform: rotate(90deg); /* Le met à l'horizontal */
+    /* Ajustement des marges du pop-up global sur petit écran */
+    .discord-modal {
+        width: 90%;
+        padding: 25px 20px;
+    }
 }
     </style>
 </head>
 <body>
 
-    
 <script>
 function resetSite() {
     if(confirm("Cela va vider la mémoire du navigateur et forcer le rechargement des images depuis data.js. Continuer ?")) {
@@ -621,8 +432,31 @@ function resetSite() {
     }
 }
 </script>
-   <div id="cover-page">
+
+    <div id="cover-page">
         <p>clique pour entrée...</p>
+    </div>
+
+    <div id="discord-overlay">
+        <div class="discord-modal">
+            <div class="discord-icon-box"><i class="fab fa-discord"></i></div>
+            <h2>Rejoins la communauté !</h2>
+            <p>Récupère le code d'accès sur notre Discord pour entrer sur le site.</p>
+            
+            <a href="https://lk10ar.github.io/invite-discord-lk10/" target="_blank" class="btn-join-discord">
+                REJOINDRE LE SERVEUR
+            </a>
+
+            <div class="access-form">
+                <input type="text" id="access-code-input" placeholder="Entrez le code d'accès ici..." autocomplete="off">
+                <button class="btn-validate-code" onclick="checkAccessCode()">VALIDER</button>
+            </div>
+            <p id="access-error" style="color:#e74c3c; font-size:12px; display:none; margin-top:10px;">Code incorrect !</p>
+        </div>
+    </div>
+
+    <div id="vip-diamond" title="Membre VIP - Accès Premium">
+        <i class="fas fa-gem"></i>
     </div>
     <header>
     <div style="display:flex; align-items:center;">
@@ -867,15 +701,10 @@ function resetSite() {
 </script>
 
     <script>
-        if (typeof baseMovies === 'undefined') { var baseMovies = []; }
-
-        const GENRES_LIST = [
-            "Action", "Aventure", "Animation", "Comédie", "Crime", "Drame", 
-            "Fantastique", "Guerre", "Histoire", "Horreur", "Mystère", 
-            "Romance", "Science-Fiction", "Thriller", "Western"
-        ];
-
+        // --- 1. GESTION DES VARIABLES GLOBALES ET SECURITE ---
+        let isVipUser = false; 
         let moviesDB = [];
+        const GENRES_LIST = ["Action", "Aventure", "Animation", "Comédie", "Crime", "Drame", "Fantastique", "Guerre", "Histoire", "Horreur", "Mystère", "Romance", "Science-Fiction", "Thriller", "Western"];
         const ITEMS_PER_PAGE = 18; 
         let currentPage = 1; 
         let currentCategory = 'all'; 
@@ -884,59 +713,96 @@ function resetSite() {
         let currentMovie = null;
         let isEditing = false; let editingId = null;
         let isAdminUnlocked = false;
-        
         let currentLanguage = 'vf'; 
         let currentServer = 'premium'; 
         let currentEpisodeIndex = 0; 
+        const TMDB_API_KEY = 'c1aa675ecab2d06c2eb5101345951b6d'; 
 
+        if (typeof baseMovies === 'undefined') { var baseMovies = []; }
+
+        // --- 2. INITIALISATION AU CHARGEMENT ---
         window.onload = () => {
-    loadMovies();
-    initMegaMenu(); 
-    renderAdminGenres(); 
+            loadMovies();
+            initMegaMenu(); 
+            renderAdminGenres(); 
 
-    document.getElementById('home-logo').onclick = () => setCategory('all');
-    document.getElementById('nav-all').onclick = () => { setCategory('all'); closeMobileMenu(); };
-    
-    const searchInput = document.getElementById('searchInput');
-    
-    // 1. Recherche normale avec Entrée
-    searchInput.addEventListener('keypress', (e) => { if(e.key === 'Enter') performSearch(); });
-    
-    // 2. Gestion du clic sur la loupe
-    document.getElementById('searchIcon').addEventListener('click', () => performSearch());
-    
-    // 3. --- CODE SECRET ADMIN ---
-    // Ce code vérifie en temps réel ce que tu tapes
-    searchInput.addEventListener('input', function(e) {
-        if (e.target.value === 'admin123') { // Si le texte est exactement le mot de passe
-            toggleAdminAuth(true); // On lance l'admin directement
-            e.target.value = ''; // On efface le mot de passe pour qu'il reste secret
-        }
-    });
-    
-    setCategory('all');
-};
- /* --- GESTION DE LA PAGE D'ACCUEIL (COVER PAGE) --- */
-document.addEventListener("DOMContentLoaded", function() {
-    const cover = document.getElementById('cover-page');
-    
-    if(cover) {
-        // 1. IMPORTANT : On cache la barre de scroll dès le début
-        document.body.classList.add('no-scroll');
-
-        cover.addEventListener('click', function() {
-            // 2. Animation de disparition
-            cover.style.opacity = '0';
+            document.getElementById('home-logo').onclick = () => setCategory('all');
+            document.getElementById('nav-all').onclick = () => { setCategory('all'); closeMobileMenu(); };
             
-            // 3. Une fois l'animation finie (0.5s), on enlève le bloc et on remet le scroll
-            setTimeout(function() {
-                cover.style.display = 'none';
-                document.body.classList.remove('no-scroll'); // On réactive le scroll ici
-            }, 500);
-        });
-    }
-});
+            const searchInput = document.getElementById('searchInput');
+            searchInput.addEventListener('keypress', (e) => { if(e.key === 'Enter') performSearch(); });
+            document.getElementById('searchIcon').addEventListener('click', () => performSearch());
+            
+            // Code Admin Secret
+            searchInput.addEventListener('input', function(e) {
+                if (e.target.value === 'admin123') { 
+                    toggleAdminAuth(true); 
+                    e.target.value = ''; 
+                }
+            });
+            
+            setCategory('all');
+        };
 
+        // --- 3. GESTION DU COVER PAGE & ACCES ---
+        document.addEventListener("DOMContentLoaded", function() {
+            const cover = document.getElementById('cover-page');
+            const discordOverlay = document.getElementById('discord-overlay');
+            
+            if(cover) {
+                document.body.classList.add('no-scroll'); // Bloque scroll au début
+
+                cover.addEventListener('click', function() {
+                    cover.style.opacity = '0';
+                    setTimeout(function() {
+                        cover.style.display = 'none';
+                        if(discordOverlay) {
+                            discordOverlay.style.display = 'flex';
+                        } else {
+                            document.body.classList.remove('no-scroll');
+                        }
+                    }, 500);
+                });
+            }
+        });
+
+        // Fonction fermeture Discord simple
+        function closeDiscordOnly() {
+            document.getElementById('discord-overlay').style.display = 'none';
+            document.body.classList.remove('no-scroll');
+        }
+
+        // Fonction vérification CODE
+        function checkAccessCode() {
+            const input = document.getElementById('access-code-input');
+            const errorMsg = document.getElementById('access-error');
+            const code = input.value.trim();
+
+            if (code === 'VIPLK10') {
+                isVipUser = true;
+                document.getElementById('vip-diamond').style.display = 'block';
+                unlockSite();
+            } 
+            else if (code === 'cinelk10.co') {
+                isVipUser = false;
+                unlockSite();
+            } 
+            else {
+                errorMsg.style.display = 'block';
+                input.style.border = '1px solid red';
+                setTimeout(() => { errorMsg.style.display = 'none'; input.style.border = '1px solid #333'; }, 2000);
+            }
+        }
+
+        function unlockSite() {
+            document.getElementById('discord-overlay').style.display = 'none';
+            document.body.classList.remove('no-scroll');
+            alert(isVipUser ? "Code VIP accepté ! Accès complet." : "Code valide. Accès Standard (Uqload uniquement).");
+            // Rafraichir l'interface si un film était déjà ouvert (cas rare mais possible)
+            if(currentMovie) updatePlayerInterface();
+        }
+
+        // --- 4. FONCTIONS PRINCIPALES (Films, Grid, Player) ---
         function loadMovies() {
             const storedMovies = JSON.parse(localStorage.getItem('myCustomMovies')) || [];
             let movieMap = new Map();
@@ -947,14 +813,12 @@ document.addEventListener("DOMContentLoaded", function() {
 
         function initMegaMenu() {
             const filmContainer = document.getElementById('drop-film-genre-list');
-            // Ajout de event.stopPropagation() pour empêcher le clic de remonter au parent sur PC
             filmContainer.innerHTML = `<a onclick="event.stopPropagation(); setFilter('film', 'all'); closeMobileMenu()"><i class="fas fa-layer-group"></i> Tous les Films</a>`;
             GENRES_LIST.forEach(g => {
                 filmContainer.innerHTML += `<a onclick="event.stopPropagation(); setFilter('film', '${g}'); closeMobileMenu()"><i class="fas fa-caret-right"></i> ${g}</a>`;
             });
 
             const serieContainer = document.getElementById('drop-serie-genre-list');
-            // Pareil pour les séries
             serieContainer.innerHTML = `<a onclick="event.stopPropagation(); setFilter('serie', 'all'); closeMobileMenu()"><i class="fas fa-layer-group"></i> Toutes les Séries</a>`;
             GENRES_LIST.forEach(g => {
                 serieContainer.innerHTML += `<a onclick="event.stopPropagation(); setFilter('serie', '${g}'); closeMobileMenu()"><i class="fas fa-caret-right"></i> ${g}</a>`;
@@ -996,32 +860,23 @@ document.addEventListener("DOMContentLoaded", function() {
             let navBtn = document.getElementById('nav-' + cat); if(navBtn) navBtn.classList.add('active');
         }
 
-        // --- NOUVELLE FONCTION DE RECHERCHE (TITRE + CAST + REAL) ---
-function performSearch(forcedQuery = null) {
-    // Si on force une recherche (via un clic), on l'utilise, sinon on prend la barre de recherche
-    const query = forcedQuery ? forcedQuery.toLowerCase().trim() : document.getElementById('searchInput').value.toLowerCase().trim();
-    
-    // On met à jour visuellement la barre de recherche si ça vient d'un clic
-    if(forcedQuery) document.getElementById('searchInput').value = forcedQuery;
+        function performSearch(forcedQuery = null) {
+            const query = forcedQuery ? forcedQuery.toLowerCase().trim() : document.getElementById('searchInput').value.toLowerCase().trim();
+            if(forcedQuery) document.getElementById('searchInput').value = forcedQuery;
+            if(query === '') { setCategory('all'); return; }
 
-    if(query === '') { setCategory('all'); return; }
-
-    // On réinitialise l'affichage
-    currentPage = 1; 
-    document.querySelectorAll('.nav-link').forEach(a => a.classList.remove('active'));
-    document.getElementById('cat-title').innerText = `Résultats pour : "${query}"`;
-    
-    // LE COEUR DU SYSTÈME : On cherche dans Titre OU Acteurs OU Réalisateur
-    filteredList = moviesDB.filter(m => {
-        const inTitle = m.title && m.title.toLowerCase().includes(query);
-        const inCast = m.cast && m.cast.toLowerCase().includes(query);
-        const inDir = m.dir && m.dir.toLowerCase().includes(query);
-        
-        return inTitle || inCast || inDir;
-    });
-    
-    updateGrid(true); // On affiche les résultats
-}
+            currentPage = 1; 
+            document.querySelectorAll('.nav-link').forEach(a => a.classList.remove('active'));
+            document.getElementById('cat-title').innerText = `Résultats pour : "${query}"`;
+            
+            filteredList = moviesDB.filter(m => {
+                const inTitle = m.title && m.title.toLowerCase().includes(query);
+                const inCast = m.cast && m.cast.toLowerCase().includes(query);
+                const inDir = m.dir && m.dir.toLowerCase().includes(query);
+                return inTitle || inCast || inDir;
+            });
+            updateGrid(true);
+        }
 
         function updateGrid(isSearchMode = false) {
             const grid = document.getElementById('grid'); grid.innerHTML = '';
@@ -1045,7 +900,6 @@ function performSearch(forcedQuery = null) {
             pageItems.forEach(m => {
                 const div = document.createElement('div'); div.className = 'movie-card'; div.style.display = 'block'; 
                 div.onclick = () => openP(m.id);
-                // MODIFICATION ICI POUR AFFICHER LA NOTE ET LE COEUR
                 const rating = m.rating || "-";
                 div.innerHTML = `
                     <div class="poster" style="background-image: url('${m.poster}')">
@@ -1061,69 +915,40 @@ function performSearch(forcedQuery = null) {
         }
 
         function openP(id) {
-    document.body.classList.add('no-scroll'); // <--- AJOUTE CETTE LIGNE ICI
-    const m = moviesDB.find(x => x.id === id); if(!m) return;
-    // ... le reste du code reste identique
-    currentMovie = m; currentEpisodeIndex = 0; 
-    
-    document.getElementById('dp-img').style.backgroundImage = `url('${m.poster}')`;
-    // ... etc ... 
-    document.getElementById('dp-title').innerText = m.title; 
-            document.getElementById('dp-year').innerText = " - " + m.year;
-            // --- MODIFICATION DEBUT : Gestion des tags cliquables ---
-    const genreZone = document.getElementById('dp-genre');
-    const genreText = m.genre || "Non classé";
-    
-    // On vide la zone
-    genreZone.innerHTML = ''; 
-
-    // On sépare les genres (ex: "Action, Drame" devient ["Action", "Drame"])
-    const genresArray = genreText.split(',');
-
-    // Pour chaque genre, on crée un petit bouton
-    genresArray.forEach(g => {
-        const cleanGenre = g.trim(); // Enlève les espaces inutiles
-        const tag = document.createElement('span');
-        tag.className = 'genre-tag'; // La classe pour le CSS
-        tag.innerText = cleanGenre;
-        
-        // Au clic, on lance la fonction créée à l'étape 2
-        tag.onclick = function() { filterByTag(cleanGenre); };
-        
-        // On ajoute le bouton dans la zone + un petit espace
-        genreZone.appendChild(tag);
-    });
-    // --- MODIFICATION FIN ---
+            document.body.classList.add('no-scroll'); 
+            const m = moviesDB.find(x => x.id === id); if(!m) return;
+            currentMovie = m; currentEpisodeIndex = 0; 
             
-     // 5. Note & Pouce
-    const ratingValue = m.rating || "-";
-    document.getElementById('dp-score-poster').innerText = ratingValue;
-    const scoreDetail = document.getElementById('dp-score-detail');
-    scoreDetail.innerText = ratingValue;
-    
-    // Récupération de l'élément pouce
-    const thumbIcon = document.getElementById('dp-thumb');
-    
-    // On nettoie les anciennes classes
-    thumbIcon.className = 'fas'; 
-    scoreDetail.classList.remove('bad');
+            document.getElementById('dp-img').style.backgroundImage = `url('${m.poster}')`;
+            document.getElementById('dp-title').innerText = m.title; 
+            document.getElementById('dp-year').innerText = " - " + m.year;
+            
+            const genreZone = document.getElementById('dp-genre');
+            const genreText = m.genre || "Non classé";
+            genreZone.innerHTML = ''; 
+            const genresArray = genreText.split(',');
+            genresArray.forEach(g => {
+                const cleanGenre = g.trim(); 
+                const tag = document.createElement('span');
+                tag.className = 'genre-tag'; 
+                tag.innerText = cleanGenre;
+                tag.onclick = function() { filterByTag(cleanGenre); };
+                genreZone.appendChild(tag);
+            });
 
-    // Convertir la note en chiffre
-    const note = parseFloat(m.rating) || 0;
+            const ratingValue = m.rating || "-";
+            document.getElementById('dp-score-poster').innerText = ratingValue;
+            const scoreDetail = document.getElementById('dp-score-detail');
+            scoreDetail.innerText = ratingValue;
+            
+            const thumbIcon = document.getElementById('dp-thumb');
+            thumbIcon.className = 'fas'; 
+            scoreDetail.classList.remove('bad');
+            const note = parseFloat(m.rating) || 0;
 
-    if (note >= 8) {
-        // --- DE 8 à 10 : VERT ---
-        thumbIcon.classList.add('fa-thumbs-up', 'thumb-good');
-    } 
-    else if (note >= 5) {
-        // --- DE 5 à 7.9 : JAUNE (Pouce sur le coté) ---
-        thumbIcon.classList.add('fa-thumbs-up', 'thumb-mid', 'thumb-rotate');
-    } 
-    else {
-        // --- MOINS DE 5 : ROUGE (Pouce en bas) ---
-        thumbIcon.classList.add('fa-thumbs-down', 'thumb-bad');
-        scoreDetail.classList.add('bad'); // Le cercle devient rouge aussi
-    }
+            if (note >= 8) { thumbIcon.classList.add('fa-thumbs-up', 'thumb-good'); } 
+            else if (note >= 5) { thumbIcon.classList.add('fa-thumbs-up', 'thumb-mid', 'thumb-rotate'); } 
+            else { thumbIcon.classList.add('fa-thumbs-down', 'thumb-bad'); scoreDetail.classList.add('bad'); }
 
             const desc = m.desc || "";
             const descEl = document.getElementById('dp-desc');
@@ -1137,41 +962,24 @@ function performSearch(forcedQuery = null) {
                 btnMore.innerText = "Lire la suite";
                 btnMore.onclick = function() { toggleDesc(); };
             }
-// --- MODIFICATION : Réalisateur et Acteurs cliquables ---
-    
-    // Fonction utilitaire pour créer les liens (ne la copie pas ailleurs, laisse-la ici ou sors-la si tu préfères)
-    const createLinks = (containerId, textString) => {
-        const container = document.getElementById(containerId);
-        container.innerHTML = ''; // On vide
-        
-        if(!textString) { container.innerText = "-"; return; }
 
-        const names = textString.split(','); // On coupe à chaque virgule
-        
-        names.forEach((name, index) => {
-            const cleanName = name.trim();
-            const span = document.createElement('span');
-            span.className = 'person-link';
-            span.innerText = cleanName;
-            
-            // Si ce n'est pas le dernier nom, on ajoute une virgule visuelle
-            if (index < names.length - 1) span.innerText += ",";
-            
-            // Au clic : on ferme le lecteur et on lance la recherche
-            span.onclick = () => {
-                closeP();
-                window.scrollTo({top: 0, behavior: 'smooth'});
-                openActorProfile(cleanName);
+            const createLinks = (containerId, textString) => {
+                const container = document.getElementById(containerId);
+                container.innerHTML = ''; 
+                if(!textString) { container.innerText = "-"; return; }
+                const names = textString.split(','); 
+                names.forEach((name, index) => {
+                    const cleanName = name.trim();
+                    const span = document.createElement('span');
+                    span.className = 'person-link';
+                    span.innerText = cleanName;
+                    if (index < names.length - 1) span.innerText += ",";
+                    span.onclick = () => { closeP(); window.scrollTo({top: 0, behavior: 'smooth'}); openActorProfile(cleanName); };
+                    container.appendChild(span);
+                });
             };
-            
-            container.appendChild(span);
-        });
-    };
-
-    // On applique la fonction magique
-    createLinks('dp-dir', m.dir);  // Pour le réalisateur
-    createLinks('dp-cast', m.cast); // Pour les acteurs
-    // --- FIN MODIFICATION ---
+            createLinks('dp-dir', m.dir); 
+            createLinks('dp-cast', m.cast); 
             
             const trailerBtn = document.getElementById('btn-trailer');
             if(m.trailer_iframe) { trailerBtn.style.opacity = '1'; trailerBtn.style.cursor = 'pointer'; } 
@@ -1206,107 +1014,80 @@ function performSearch(forcedQuery = null) {
         function toggleDesc() {
             const descEl = document.getElementById('dp-desc');
             const btn = document.getElementById('btn-read-more');
-            if(descEl.classList.contains('clamped')) {
-                descEl.classList.remove('clamped');
-                btn.innerText = "Réduire";
-            } else {
-                descEl.classList.add('clamped');
-                btn.innerText = "Lire la suite";
-            }
+            if(descEl.classList.contains('clamped')) { descEl.classList.remove('clamped'); btn.innerText = "Réduire"; } 
+            else { descEl.classList.add('clamped'); btn.innerText = "Lire la suite"; }
         }
 
         function changeLanguage() { currentLanguage = document.getElementById('language-select').value; updatePlayerInterface(); }
         function changeServer(serverName) { currentServer = serverName; updatePlayerInterface(); }
 
+        // --- C'EST ICI QUE LA MAGIE S'OPERE (VERSION VIP SECURISEE) ---
         function updatePlayerInterface() {
-    if (!currentMovie) return;
+            if (!currentMovie) return;
 
-    // --- 1. Récupération des liens selon le type (Film ou Épisode) ---
-    let linkPremium = "";
-    let linkUqload = "";
+            let linkPremium = "";
+            let linkUqload = "";
 
-    if (currentMovie.type === 'film') {
-        if (currentLanguage === 'vf') {
-            linkPremium = currentMovie.iframe_premium;
-            linkUqload = currentMovie.iframe_uqload;
-        } else if (currentLanguage === 'vostfr') {
-            linkPremium = currentMovie.iframe_premium_vostfr;
-            linkUqload = currentMovie.iframe_uqload_vostfr;
-        }
-    } 
-    else if (currentMovie.type === 'serie') {
-        renderEpisodeList(); 
-        const eps = currentMovie.episodes || [];
-        if (eps.length > 0 && eps[currentEpisodeIndex]) {
-            const ep = eps[currentEpisodeIndex];
-            if (currentLanguage === 'vf') {
-                linkPremium = ep.iframe_premium;
-                linkUqload = ep.iframe_uqload;
-            } else if (currentLanguage === 'vostfr') {
-                linkPremium = ep.iframe_premium_vostfr;
-                linkUqload = ep.iframe_uqload_vostfr;
+            if (currentMovie.type === 'film') {
+                if (currentLanguage === 'vf') { linkPremium = currentMovie.iframe_premium; linkUqload = currentMovie.iframe_uqload; } 
+                else if (currentLanguage === 'vostfr') { linkPremium = currentMovie.iframe_premium_vostfr; linkUqload = currentMovie.iframe_uqload_vostfr; }
+            } 
+            else if (currentMovie.type === 'serie') {
+                renderEpisodeList(); 
+                const eps = currentMovie.episodes || [];
+                if (eps.length > 0 && eps[currentEpisodeIndex]) {
+                    const ep = eps[currentEpisodeIndex];
+                    if (currentLanguage === 'vf') { linkPremium = ep.iframe_premium; linkUqload = ep.iframe_uqload; } 
+                    else if (currentLanguage === 'vostfr') { linkPremium = ep.iframe_premium_vostfr; linkUqload = ep.iframe_uqload_vostfr; }
+                    highlightActiveEpisode();
+                }
             }
-            highlightActiveEpisode();
+
+            const btnPrem = document.getElementById('btn-server-prem');
+            const btnUql = document.getElementById('btn-server-uql');
+
+            btnPrem.style.display = 'none';
+            btnUql.style.display = 'none';
+
+            // SECURITE VIP : Affiche Premium SEULEMENT si VIP
+            if (linkPremium && linkPremium.trim() !== "" && isVipUser === true) {
+                btnPrem.style.display = 'inline-block';
+            }
+            // Affiche Uqload pour tout le monde
+            if (linkUqload && linkUqload.trim() !== "") {
+                btnUql.style.display = 'inline-block';
+            }
+
+            if (!isVipUser) { currentServer = 'uqload'; }
+
+            if (currentServer === 'premium' && btnPrem.style.display === 'none' && btnUql.style.display !== 'none') { currentServer = 'uqload'; }
+            if (isVipUser && currentServer === 'uqload' && btnUql.style.display === 'none' && btnPrem.style.display !== 'none') { currentServer = 'premium'; }
+
+            btnPrem.classList.remove('active');
+            btnUql.classList.remove('active');
+            
+            if (currentServer === 'premium' && btnPrem.style.display !== 'none') {
+                btnPrem.classList.add('active');
+                setVideoContent(linkPremium);
+            } 
+            else if (currentServer === 'uqload' && btnUql.style.display !== 'none') {
+                btnUql.classList.add('active');
+                setVideoContent(linkUqload);
+            } 
+            else {
+                if (!isVipUser && linkPremium && !linkUqload) {
+                     document.getElementById('video-container').innerHTML = '<div style="color:#e74c3c; text-align:center; padding-top:200px;"><i class="fas fa-lock"></i> Ce film est réservé aux membres VIP (Serveur Premium uniquement).</div>';
+                } else {
+                     setVideoContent(""); 
+                }
+            }
         }
-    }
 
-    // --- 2. Gestion intelligente des boutons ---
-    const btnPrem = document.getElementById('btn-server-prem');
-    const btnUql = document.getElementById('btn-server-uql');
-
-    // On cache tout par défaut
-    btnPrem.style.display = 'none';
-    btnUql.style.display = 'none';
-
-    // On affiche seulement si le lien existe
-    if (linkPremium && linkPremium.trim() !== "") {
-        btnPrem.style.display = 'inline-block';
-    }
-    if (linkUqload && linkUqload.trim() !== "") {
-        btnUql.style.display = 'inline-block';
-    }
-
-    // --- 3. Sélection automatique du serveur ---
-    // Si le serveur actuel est caché (ex: on était sur Uqload mais il n'y en a pas pour ce film), on change
-    if (currentServer === 'premium' && btnPrem.style.display === 'none' && btnUql.style.display !== 'none') {
-        currentServer = 'uqload';
-    }
-    if (currentServer === 'uqload' && btnUql.style.display === 'none' && btnPrem.style.display !== 'none') {
-        currentServer = 'premium';
-    }
-
-    // Mise à jour visuelle des classes "active"
-    btnPrem.classList.remove('active');
-    btnUql.classList.remove('active');
-    
-    if (currentServer === 'premium' && btnPrem.style.display !== 'none') {
-        btnPrem.classList.add('active');
-        setVideoContent(linkPremium);
-    } 
-    else if (currentServer === 'uqload' && btnUql.style.display !== 'none') {
-        btnUql.classList.add('active');
-        setVideoContent(linkUqload);
-    } 
-    else {
-        // Aucun lien dispo
-        setVideoContent(""); 
-    }
-}
-
-    /* --- FONCTION VIDÉO CORRIGÉE (Sans blocage) --- */
-function setVideoContent(iframeCode) {
-    const box = document.getElementById('video-container');
-    
-    if (iframeCode && iframeCode.trim() !== "") { 
-        // --- CORRECTION IMPORTANTE ---
-        // On ne modifie PAS le code (pas de sandbox).
-        // On l'injecte tel quel pour que le lecteur accepte de se lancer.
-        box.innerHTML = iframeCode; 
-    } 
-    else { 
-        box.innerHTML = '<div style="color:white; text-align:center; padding-top:200px;"><i class="fas fa-exclamation-circle"></i> Lien non disponible pour cette langue/serveur.</div>'; 
-    }
-}
+        function setVideoContent(iframeCode) {
+            const box = document.getElementById('video-container');
+            if (iframeCode && iframeCode.trim() !== "") { box.innerHTML = iframeCode; } 
+            else { box.innerHTML = '<div style="color:white; text-align:center; padding-top:200px;"><i class="fas fa-exclamation-circle"></i> Lien non disponible pour cette langue/serveur.</div>'; }
+        }
 
         function renderEpisodeList() {
             const listContainer = document.getElementById('ep-list-container');
@@ -1333,27 +1114,22 @@ function setVideoContent(iframeCode) {
 
         function openTrailer() { if (currentMovie && currentMovie.trailer_iframe) { document.getElementById('trailer-video-container').innerHTML = currentMovie.trailer_iframe; document.getElementById('trailer-overlay').style.display = 'flex'; } }
         function closeTrailer() { document.getElementById('trailer-overlay').style.display = 'none'; document.getElementById('trailer-video-container').innerHTML = ''; }
-        function closeP() { document.getElementById('player-overlay').style.display = 'none'; document.getElementById('video-container').innerHTML = ''; }
+        function closeP() { document.getElementById('player-overlay').style.display = 'none'; document.getElementById('video-container').innerHTML = ''; document.body.classList.remove('no-scroll'); }
         
-        // --- FONCTION MODIFIÉE : ACTIVE/DÉSACTIVE LE MODE ADMIN ---
-function toggleAdminAuth(forceUnlock = false) {
-    // Si on est déjà débloqué, on verrouille
-    if(isAdminUnlocked) { 
-        isAdminUnlocked = false; 
-        document.body.classList.remove('admin-active'); 
-        
-        // On cache la zone d'export code
-        document.getElementById('dev-export-area').style.display = 'none';
-
-        alert("Mode Admin désactivé."); 
-    } 
-    // Sinon, si le code secret a été tapé (forceUnlock est vrai)
-    else if (forceUnlock) { 
-        isAdminUnlocked = true; 
-        document.body.classList.add('admin-active'); 
-        alert("Mode Admin activé !"); 
-    }
-}
+        // --- 5. FONCTIONS ADMIN ---
+        function toggleAdminAuth(forceUnlock = false) {
+            if(isAdminUnlocked) { 
+                isAdminUnlocked = false; 
+                document.body.classList.remove('admin-active'); 
+                document.getElementById('dev-export-area').style.display = 'none';
+                alert("Mode Admin désactivé."); 
+            } 
+            else if (forceUnlock) { 
+                isAdminUnlocked = true; 
+                document.body.classList.add('admin-active'); 
+                alert("Mode Admin activé !"); 
+            }
+        }
 
         function toggleTypeUI() {
             const type = document.getElementById('add-type').value;
@@ -1486,10 +1262,9 @@ function toggleAdminAuth(forceUnlock = false) {
             if(isEditing && currentMovie.id === editingId) { openP(editingId); }
             updateGrid();
             
-           // NOUVEAU CODE (Affiche le code tout le temps)
             alert(isEditing ? "Modification réussie ! Copie le nouveau code ci-dessous." : "Création réussie ! Copie le code ci-dessous.");
-            exportSingleMovie(movieData); // On force l'affichage du code dans TOUS les cas
-        } // <--- C'EST CETTE ACCOLADE QUI MANQUAIT !
+            exportSingleMovie(movieData); 
+        }
 
         function deleteMovie() {
             if(!isEditing || !editingId) return;
@@ -1509,17 +1284,13 @@ function toggleAdminAuth(forceUnlock = false) {
             box.style.display = 'block';
             document.getElementById('export-code').value = JSON.stringify(movie) + ",\n";
             window.scrollTo({top:0, behavior:'smooth'});
-            // Optional: Highlight the box
             box.style.border = "2px solid #2ecc71";
             setTimeout(() => box.style.border = "1px solid #333", 2000);
         }
 
         function exportAllMovies() {
             const box = document.getElementById('dev-export-area');
-            if(box.style.display === 'block') {
-                box.style.display = 'none';
-                return;
-            }
+            if(box.style.display === 'block') { box.style.display = 'none'; return; }
             box.style.display = 'block';
             const storedMovies = JSON.parse(localStorage.getItem('myCustomMovies')) || [];
             let codeText = "";
@@ -1551,95 +1322,76 @@ function toggleAdminAuth(forceUnlock = false) {
             if (currentPage < totalPages) { addBtn(currentPage + 1, '»', false); }
         }
         function goToPage(p) { currentPage = p; updateGrid(); window.scrollTo({top:0, behavior:'smooth'}); }
-    function filterByTag(genre) {
-    closeP(); // On ferme la fenêtre de détails
-    
-    // On lance le filtre sur TOUTES les catégories (Films + Séries)
-    // Tu peux remplacer 'all' par currentCategory si tu veux rester dans films ou séries uniquement
-    setFilter('all', genre); 
-    
-    // On remonte en haut pour voir les résultats
-    window.scrollTo({top: 0, behavior: 'smooth'});
-}
-/* --- GESTION PROFIL ACTEUR (API TMDB) --- */
-function closeP() {
-    document.body.classList.remove('no-scroll'); // <--- AJOUTE CETTE LIGNE ICI
-    document.getElementById('player-overlay').style.display = 'none'; 
-    document.getElementById('video-container').innerHTML = ''; 
-}
-// Clé API publique (si elle bloque, inscris-toi sur TMDB pour avoir la tienne)
-const TMDB_API_KEY = 'c1aa675ecab2d06c2eb5101345951b6d'; 
-
-async function openActorProfile(name, job = 'Acteur') {
-    // 1. Bloquer le scroll
-    document.body.classList.add('no-scroll');
-
-    // 2. Ouvrir la fenêtre
-    document.getElementById('actor-overlay').style.display = 'flex';
-    document.getElementById('ac-name').innerText = name;
-    document.getElementById('ac-job').innerText = job;
-    document.getElementById('ac-bio').innerText = "Recherche des infos sur TMDB...";
-    document.getElementById('ac-photo').src = "https://via.placeholder.com/200x300?text=No+Image"; 
-
-    // 3. Chercher la personne sur TMDB
-    try {
-        const searchUrl = `https://api.themoviedb.org/3/search/person?api_key=${TMDB_API_KEY}&language=fr-FR&query=${encodeURIComponent(name)}`;
-        const response = await fetch(searchUrl);
-        const data = await response.json();
-
-        if (data.results && data.results.length > 0) {
-            const person = data.results[0];
-            const personId = person.id;
-            const detailUrl = `https://api.themoviedb.org/3/person/${personId}?api_key=${TMDB_API_KEY}&language=fr-FR`;
-            const detailResponse = await fetch(detailUrl);
-            const detailData = await detailResponse.json();
-
-            if (person.profile_path) {
-                document.getElementById('ac-photo').src = `https://image.tmdb.org/t/p/w500${person.profile_path}`;
-            }
-            document.getElementById('ac-bio').innerText = detailData.biography || "Pas de biographie disponible en français.";
-            document.getElementById('ac-birth').innerText = detailData.birthday ? "Né(e) le " + detailData.birthday : "Date inconnue";
-        } else {
-            document.getElementById('ac-bio').innerText = "Aucune information trouvée pour cette personne.";
+        function filterByTag(genre) {
+            closeP(); 
+            setFilter('all', genre); 
+            window.scrollTo({top: 0, behavior: 'smooth'});
         }
-    } catch (error) {
-        console.error("Erreur TMDB", error);
-        document.getElementById('ac-bio').innerText = "Impossible de charger les infos (Erreur connexion).";
-    }
+        
+        // --- 6. PROFIL ACTEUR ---
+        async function openActorProfile(name, job = 'Acteur') {
+            document.body.classList.add('no-scroll');
+            document.getElementById('actor-overlay').style.display = 'flex';
+            document.getElementById('ac-name').innerText = name;
+            document.getElementById('ac-job').innerText = job;
+            document.getElementById('ac-bio').innerText = "Recherche des infos sur TMDB...";
+            document.getElementById('ac-photo').src = "https://via.placeholder.com/200x300?text=No+Image"; 
 
-    // 4. Afficher les films locaux correspondants
-    const actorGrid = document.getElementById('actor-grid');
-    actorGrid.innerHTML = ''; 
+            try {
+                const searchUrl = `https://api.themoviedb.org/3/search/person?api_key=${TMDB_API_KEY}&language=fr-FR&query=${encodeURIComponent(name)}`;
+                const response = await fetch(searchUrl);
+                const data = await response.json();
 
-    const relatedMovies = moviesDB.filter(m => {
-        const inCast = m.cast && m.cast.toLowerCase().includes(name.toLowerCase());
-        const inDir = m.dir && m.dir.toLowerCase().includes(name.toLowerCase());
-        return inCast || inDir;
-    });
+                if (data.results && data.results.length > 0) {
+                    const person = data.results[0];
+                    const personId = person.id;
+                    const detailUrl = `https://api.themoviedb.org/3/person/${personId}?api_key=${TMDB_API_KEY}&language=fr-FR`;
+                    const detailResponse = await fetch(detailUrl);
+                    const detailData = await detailResponse.json();
 
-    if (relatedMovies.length === 0) {
-        actorGrid.innerHTML = '<p style="color:#666;">Aucun autre film disponible sur le site.</p>';
-    } else {
-        relatedMovies.forEach(m => {
-            const div = document.createElement('div');
-            div.className = 'movie-card';
-            div.style.display = 'block';
-            div.onclick = () => { closeActor(); openP(m.id); }; 
-            div.innerHTML = `
-                <div class="poster" style="height:180px; background-image: url('${m.poster}')"></div>
-                <div class="movie-info" style="padding:5px;"><div class="movie-title" style="font-size:11px;">${m.title}</div></div>
-            `;
-            actorGrid.appendChild(div);
-        });
-    }
-} 
+                    if (person.profile_path) {
+                        document.getElementById('ac-photo').src = `https://image.tmdb.org/t/p/w500${person.profile_path}`;
+                    }
+                    document.getElementById('ac-bio').innerText = detailData.biography || "Pas de biographie disponible en français.";
+                    document.getElementById('ac-birth').innerText = detailData.birthday ? "Né(e) le " + detailData.birthday : "Date inconnue";
+                } else {
+                    document.getElementById('ac-bio').innerText = "Aucune information trouvée pour cette personne.";
+                }
+            } catch (error) {
+                console.error("Erreur TMDB", error);
+                document.getElementById('ac-bio').innerText = "Impossible de charger les infos (Erreur connexion).";
+            }
 
-// CETTE FONCTION DOIT ÊTRE EN DEHORS (C'était ça l'erreur)
-function closeActor() {
-    document.body.classList.remove('no-scroll');
-    document.getElementById('actor-overlay').style.display = 'none';
-}
+            const actorGrid = document.getElementById('actor-grid');
+            actorGrid.innerHTML = ''; 
+
+            const relatedMovies = moviesDB.filter(m => {
+                const inCast = m.cast && m.cast.toLowerCase().includes(name.toLowerCase());
+                const inDir = m.dir && m.dir.toLowerCase().includes(name.toLowerCase());
+                return inCast || inDir;
+            });
+
+            if (relatedMovies.length === 0) {
+                actorGrid.innerHTML = '<p style="color:#666;">Aucun autre film disponible sur le site.</p>';
+            } else {
+                relatedMovies.forEach(m => {
+                    const div = document.createElement('div');
+                    div.className = 'movie-card';
+                    div.style.display = 'block';
+                    div.onclick = () => { closeActor(); openP(m.id); }; 
+                    div.innerHTML = `
+                        <div class="poster" style="height:180px; background-image: url('${m.poster}')"></div>
+                        <div class="movie-info" style="padding:5px;"><div class="movie-title" style="font-size:11px;">${m.title}</div></div>
+                    `;
+                    actorGrid.appendChild(div);
+                });
+            }
+        } 
+
+        function closeActor() {
+            document.body.classList.remove('no-scroll');
+            document.getElementById('actor-overlay').style.display = 'none';
+        }
     </script>
 </body>
 </html>
-
