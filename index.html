@@ -420,6 +420,71 @@
         padding: 25px 20px;
     }
 }
+
+        /* --- CORRECTIF RESPONSIVE MOBILE (À PLACER À LA FIN DU CSS) --- */
+@media (max-width: 768px) {
+    
+    /* 1. RÉPARATION DU POP-UP CODE & BOUTON */
+    /* On force le conteneur en colonne (vertical) */
+    .access-form {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 10px !important;
+        margin-top: 15px !important;
+    }
+
+    /* L'input prend toute la largeur */
+    #access-code-input {
+        width: 100% !important;
+        text-align: center !important;
+        padding: 12px !important; /* Plus facile à taper */
+        margin: 0 !important;
+    }
+
+    /* Le bouton prend toute la largeur */
+    .btn-validate-code {
+        width: 100% !important;
+        padding: 12px !important; /* Plus facile à cliquer */
+        margin: 0 !important;
+    }
+
+    /* Ajustement de la boîte globale pour qu'elle ne touche pas les bords */
+    .discord-modal {
+        width: 85% !important;
+        padding: 20px !important;
+        margin: 0 auto !important;
+    }
+
+    /* 2. RÉPARATION DE L'IMAGE DÉTAILS (Ne plus couper) */
+    .d-poster-img {
+        /* On fixe une taille max pour ne pas que ça prenne tout l'écran */
+        max-width: 180px !important; 
+        width: 100% !important;
+        
+        /* Hauteur fixe standard pour une affiche */
+        height: 270px !important; 
+        
+        /* CONTAIN = L'image entière est visible (quitte à avoir des bandes noires) */
+        /* COVER = L'image remplit tout (mais coupe les bords) */
+        /* On force le CONTAIN ici */
+        background-size: contain !important; 
+        
+        background-repeat: no-repeat !important;
+        background-position: center center !important;
+        background-color: #000 !important; /* Fond noir propre */
+        margin: 0 auto 15px auto !important; /* Centrage */
+        box-shadow: none !important; /* Enlève l'ombre qui fait bizarre si l'image est petite */
+        border: 1px solid #333 !important;
+    }
+    
+    /* On centre le bloc de gauche qui contient l'image */
+    .d-left {
+        width: 100% !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+    }
+}
     </style>
 </head>
 <body>
@@ -1395,6 +1460,7 @@ function resetSite() {
     </script>
 </body>
 </html>
+
 
 
 
