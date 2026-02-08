@@ -566,7 +566,7 @@ function resetSite() {
         let isVipUser = false;
         let hasAccess = false; // SECURITE PAR DEFAUT
         let moviesDB = [];
-        const GENRES_LIST = ["Action", "Aventure", "Animation", "Comédie", "Crime", "Drame", "Fantastique", "Guerre", "Histoire", "Horreur", "Mystère", "Romance", "Science-Fiction", "Thriller", "Western"];
+        const GENRES_LIST = ["Action", "Aventure", "Animation", "Disney", "Dreamworks", "Comédie", "Crime", "Drame", "Fantastique", "Guerre", "Histoire", "Horreur", "Mystère", "Romance", "Science-Fiction", "Thriller", "Western"];
         const ITEMS_PER_PAGE = 18; 
         let currentPage = 1; 
         let currentCategory = 'all'; 
@@ -673,30 +673,36 @@ function resetSite() {
             moviesDB = Array.from(movieMap.values());
         }
 
-        function initMegaMenu() {
-            const filmContainer = document.getElementById('drop-film-genre-list');
-            filmContainer.innerHTML = `<a onclick="event.stopPropagation(); setFilter('film', 'all'); closeMobileMenu()"><i class="fas fa-layer-group"></i> Tous les Films</a>`;
-            GENRES_LIST.forEach(g => {
-                filmContainer.innerHTML += `<a onclick="event.stopPropagation(); setFilter('film', '${g}'); closeMobileMenu()"><i class="fas fa-caret-right"></i> ${g}</a>`;
-            });
-
-            const serieContainer = document.getElementById('drop-serie-genre-list');
-            serieContainer.innerHTML = `<a onclick="event.stopPropagation(); setFilter('serie', 'all'); closeMobileMenu()"><i class="fas fa-layer-group"></i> Toutes les Séries</a>`;
-            GENRES_LIST.forEach(g => {
-                serieContainer.innerHTML += `<a onclick="event.stopPropagation(); setFilter('serie', '${g}'); closeMobileMenu()"><i class="fas fa-caret-right"></i> ${g}</a>`;
-            });
+      function initMegaMenu() {
+    const studios = ["Marvel", "DC", "Disney", "Dreamworks"];
+    const filmContainer = document.getElementById('drop-film-genre-list');
+    
+    // On vide et on prépare la structure
+    filmContainer.innerHTML = '';
+    
+    // Ajout d'une section Studios en haut
+    let studioHTML = `<div style="margin-bottom:15px;"><h3><i class="fas fa-star"></i> STUDIOS</h3>`;
+    studios.forEach(s => {
+        studioHTML += `<a onclick="event.stopPropagation(); setFilter('film', '${s}'); closeMobileMenu()"><i class="fas fa-magic"></i> ${s}</a>`;
+    });
+    studioHTML += `</div><h3><i class="fas fa-tags"></i> PAR GENRE</h3>`;
+    
+    filmContainer.innerHTML = studioHTML + `<a onclick="event.stopPropagation(); setFilter('film', 'all'); closeMobileMenu()"><i class="fas fa-layer-group"></i> Tous les Films</a>`;
+    
+    // On ajoute le reste des genres (en excluant les studios de la liste des genres pour ne pas doubler)
+    GENRES_LIST.forEach(g => {
+        if(!studios.includes(g)) {
+            filmContainer.innerHTML += `<a onclick="event.stopPropagation(); setFilter('film', '${g}'); closeMobileMenu()"><i class="fas fa-caret-right"></i> ${g}</a>`;
         }
+    });
 
-        function toggleMobileMenu() { document.getElementById('main-nav').classList.toggle('active'); }
-        function closeMobileMenu() { document.getElementById('main-nav').classList.remove('active'); }
-        function toggleSubMenu(item) {
-            if (window.innerWidth <= 992) { item.classList.toggle('show-mobile'); } 
-            else {
-                const linkId = item.querySelector('.nav-link').id;
-                if(linkId === 'nav-film') setCategory('film');
-                if(linkId === 'nav-serie') setCategory('serie');
-            }
-        }
+    // Pour les séries (on garde la liste classique ou on adapte)
+    const serieContainer = document.getElementById('drop-serie-genre-list');
+    serieContainer.innerHTML = `<a onclick="event.stopPropagation(); setFilter('serie', 'all'); closeMobileMenu()"><i class="fas fa-layer-group"></i> Toutes les Séries</a>`;
+    GENRES_LIST.forEach(g => {
+        serieContainer.innerHTML += `<a onclick="event.stopPropagation(); setFilter('serie', '${g}'); closeMobileMenu()"><i class="fas fa-caret-right"></i> ${g}</a>`;
+    });
+}
 
         function renderAdminGenres() {
             const container = document.getElementById('genre-checkbox-container');
