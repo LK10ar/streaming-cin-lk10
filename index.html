@@ -112,46 +112,17 @@
         .vote-count { font-size: 10px; color: #555; text-align: center; width: 100%; margin-top: 5px; }
         #dp-thumb { font-size: 35px; transition: 0.3s; }
         .thumb-good { color: #2ecc71; } .thumb-mid { color: #f1c40f; } .thumb-bad { color: #e74c3c; } .thumb-rotate { transform: rotate(90deg); }
-/* --- GALERIE ACTEURS --- */
-        .cast-images-container {
-            display: flex;
-            gap: 10px;
-            margin-top: 20px;
-            overflow-x: auto;
-            padding-bottom: 10px;
-        }
-        /* Design de la scrollbar pour la liste d'acteurs */
+        
+        /* --- GALERIE ACTEURS --- */
+        .cast-images-container { display: flex; gap: 10px; margin-top: 20px; overflow-x: auto; padding-bottom: 10px; }
         .cast-images-container::-webkit-scrollbar { height: 6px; }
         .cast-images-container::-webkit-scrollbar-track { background: #111; border-radius: 3px; }
         .cast-images-container::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 3px; }
+        .cast-card { width: 80px; flex-shrink: 0; cursor: pointer; transition: 0.3s; text-align: center; }
+        .cast-card:hover { transform: scale(1.05); filter: drop-shadow(0 0 5px var(--primary)); }
+        .cast-photo { width: 80px; height: 120px; object-fit: cover; border-radius: 4px; background-color: #222; border: 1px solid #333; }
+        .cast-name-small { font-size: 10px; color: #aaa; margin-top: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-        .cast-card {
-            width: 80px;
-            flex-shrink: 0;
-            cursor: pointer;
-            transition: 0.3s;
-            text-align: center;
-        }
-        .cast-card:hover {
-            transform: scale(1.05);
-            filter: drop-shadow(0 0 5px var(--primary));
-        }
-        .cast-photo {
-            width: 80px;
-            height: 120px;
-            object-fit: cover;
-            border-radius: 4px;
-            background-color: #222;
-            border: 1px solid #333;
-        }
-        .cast-name-small {
-            font-size: 10px;
-            color: #aaa;
-            margin-top: 5px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
         /* --- 5. OVERLAYS DIVERS (BA, ACTEUR, ADMIN, COVER, DISCORD) --- */
         #trailer-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 3000; justify-content: center; align-items: center; }
         .trailer-content { width: 90%; max-width: 900px; position: relative; aspect-ratio: 16 / 9; background: #000; }
@@ -362,7 +333,7 @@ function resetSite() {
     <div style="display:flex; align-items:center;">
         <div class="burger-menu" onclick="toggleMobileMenu()"><i class="fas fa-bars"></i></div>
         <div class="logo" id="home-logo" style="margin-left:15px;">
-            <img src="asset\logolk10.png" alt="Ciné LK10 Logo">
+            <img src="asset/logolk10.png" alt="Ciné LK10 Logo">
         </div>
     </div>
     
@@ -401,16 +372,35 @@ function resetSite() {
         </div>
     </div>
 </header>
+    
     <div class="main-container">
         <div class="section-title">
-            <button class="tab-btn" id="cat-title">Nouveautés</button>
+            <div style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
+                <button class="tab-btn" id="cat-title">Nouveautés</button>
+                
+                <select id="sort-select" style="background: #111; color: var(--primary); border: 1px solid #333; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-weight: bold; outline: none;" onchange="changeSort()">
+                    <option value="date_desc">🕒 Plus récents d'abord</option>
+                    <option value="date_asc">⏳ Plus anciens d'abord</option>
+                    <option value="note_desc">⭐ Mieux notés</option>
+                    <option value="alpha_asc">🔤 De A à Z</option>
+                </select>
+
+                <div style="display: flex; background: #111; border: 1px solid #333; border-radius: 4px; overflow: hidden; height: 32px;">
+                    <input type="number" id="year-filter-input" placeholder="Année (ex: 2002)" style="background: transparent; border: none; color: white; padding: 0 10px; outline: none; width: 140px; font-size: 13px;" onkeypress="if(event.key === 'Enter') applyGlobalYear()">
+                    <button onclick="applyGlobalYear()" style="background: #333; border: none; cursor: pointer; padding: 0 12px; color: white; transition: 0.3s;" onmouseover="this.style.background='var(--primary)'; this.style.color='black';" onmouseout="this.style.background='#333'; this.style.color='white';" title="Rechercher l'année"><i class="fas fa-search"></i></button>
+                    <button onclick="clearGlobalYear()" style="background: var(--danger); border: none; cursor: pointer; padding: 0 12px; color: white;" title="Effacer le filtre"><i class="fas fa-times"></i></button>
+                </div>
+            </div>
+            
             <button onclick="exportAllMovies()" class="admin-btn" style="background:none; border:none; color:#666; cursor:pointer; font-size:12px; margin-left:auto;">Mode Développeur (Tout)</button>
         </div>
+        
         <div class="code-export-box" id="dev-export-area">
             <p style="color:#aaa; font-size:12px; margin-bottom:5px;">Copie ce code et ajoute-le dans le fichier data.js (à la suite des autres) :</p>
             <textarea class="code-area" id="export-code"></textarea>
             <button class="btn-copy" onclick="copyCode()">Copier le code</button>
         </div>
+        
         <div class="movie-grid" id="grid"></div>
         <div class="pagination" id="pag-bar"></div>
     </div>
@@ -422,9 +412,10 @@ function resetSite() {
         </div>
         
         <a href="https://lk10ar.github.io/invite-discord-lk10/" target="_blank" class="footer-discord-link" title="Rejoindre le Discord">
-            <img src="asset\logolk10.png" alt="Logo Ciné LK10">
+            <img src="asset/logolk10.png" alt="Logo Ciné LK10">
         </a>
     </footer>
+    
     <div id="player-overlay">
         <div class="player-content">
             <div class="player-actions"></div>
@@ -434,9 +425,7 @@ function resetSite() {
             <div class="video-box" id="video-container"><i class="fas fa-play play-btn-fake"></i></div>
             
           <div class="controls-bar">
-    
                 <div style="display: flex; flex-direction: column; gap: 5px;">
-                    
                     <div class="ublock-box" style="background:#222; color:#aaa; font-size:13px; height: 38px; padding: 0 15px; border-radius: 4px; display: flex; align-items: center; justify-content: center; gap: 8px; border: 1px solid #333; overflow: hidden;">
                         <i class="fas fa-info-circle"></i> 
                         <span class="ublock-text">Astuce : Installez <strong>AdBlock</strong> pour supprimer les publicités</span>
@@ -444,7 +433,6 @@ function resetSite() {
                             <img src="asset/AdBlock.png" alt="Logo AdBlock" style="width: auto; height: 24px; vertical-align: middle; cursor: pointer; transition: 0.3s ease;" onmouseover="this.style.transform='scale(1.2)'; this.style.filter='drop-shadow(0 0 5px var(--primary))';" onmouseout="this.style.transform='scale(1)'; this.style.filter='none';">
                         </a>
                     </div>
-
                     <div class="ublock-box" style="background:#222; color:#aaa; font-size:13px; height: 38px; padding: 0 15px; border-radius: 4px; display: flex; align-items: center; justify-content: center; gap: 8px; border: 1px solid #333; overflow: hidden;">
                         <i class="fas fa-info-circle"></i> 
                         <span class="ublock-text">Astuce : Installez <strong>Opera</strong> sur mobile pour supprimer les publicités</span>
@@ -452,7 +440,6 @@ function resetSite() {
                             <img src="asset/opera.png" alt="Logo Opera" style="width: auto; height: 24px; vertical-align: middle; cursor: pointer; transition: 0.3s ease;" onmouseover="this.style.transform='scale(1.2)'; this.style.filter='drop-shadow(0 0 5px var(--primary))';" onmouseout="this.style.transform='scale(1)'; this.style.filter='none';">
                         </a>
                     </div>
-
                 </div>
 
                 <div style="display: flex; align-items: center; gap: 20px; flex-wrap: wrap;">
@@ -489,12 +476,12 @@ function resetSite() {
                 <div id="dp-cast-images" class="cast-images-container"></div>
                 </div>
                 <div class="d-right">
-    <div class="vote-row">
-        <i id="dp-thumb" class="fas fa-thumbs-up"></i>
-        <div class="score-circle" id="dp-score-detail">8.1</div>
-    </div>
-    <div class="vote-count">Note</div>
-</div>
+                    <div class="vote-row">
+                        <i id="dp-thumb" class="fas fa-thumbs-up"></i>
+                        <div class="score-circle" id="dp-score-detail">8.1</div>
+                    </div>
+                    <div class="vote-count">Note</div>
+                </div>
             </div>
         </div>
     </div>
@@ -593,15 +580,45 @@ function resetSite() {
         </div>
     </div>
 
-
-    <script>
+<script>
     var script = document.createElement('script');
-    // On ajoute ?v= et l'heure actuelle (ex: data.js?v=171569854)
     script.src = "data.js?v=" + new Date().getTime(); 
     document.body.appendChild(script);
 </script>
 
-    <script>
+<script>
+        // Anti-curieux basique (Bloque le clic droit et les raccourcis F12)
+        document.addEventListener('contextmenu', event => event.preventDefault());
+        document.onkeydown = function(e) {
+            if(e.keyCode == 123) { return false; } 
+            if(e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) { return false; } 
+            if(e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)) { return false; } 
+            if(e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) { return false; } 
+            if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) { return false; } 
+        }
+        
+        // --- GESTION DU MENU MOBILE (BURGER) ---
+        function toggleMobileMenu() {
+            const nav = document.getElementById('main-nav');
+            nav.classList.toggle('active');
+        }
+
+        function closeMobileMenu() {
+            const nav = document.getElementById('main-nav');
+            if (nav.classList.contains('active')) {
+                nav.classList.remove('active');
+            }
+        }
+
+        function toggleSubMenu(element) {
+            if (window.innerWidth <= 992) {
+                document.querySelectorAll('.nav-item').forEach(item => {
+                    if (item !== element) item.classList.remove('show-mobile');
+                });
+                element.classList.toggle('show-mobile');
+            }
+        }
+
         // --- 1. GESTION DES VARIABLES GLOBALES ET SECURITE ---
         let isVipUser = false;
         let hasAccess = false; // SECURITE PAR DEFAUT
@@ -611,6 +628,7 @@ function resetSite() {
         let currentPage = 1; 
         let currentCategory = 'all'; 
         let currentGenreFilter = 'all'; 
+        let currentYearFilter = 'all'; 
         let filteredList = []; 
         let currentMovie = null;
         let isEditing = false; let editingId = null;
@@ -618,7 +636,9 @@ function resetSite() {
         let currentLanguage = 'vf'; 
         let currentServer = 'premium'; 
         let currentEpisodeIndex = 0; 
-        const TMDB_API_KEY = 'c1aa675ecab2d06c2eb5101345951b6d'; 
+        let currentSort = 'date_desc'; 
+        
+        const TMDB_API_KEY = atob('YzFhYTY3NWVjYWIyZDA2YzJlYjUxMDEzNDU5NTFiNmQ=');
 
         if (typeof baseMovies === 'undefined') { var baseMovies = []; }
 
@@ -635,16 +655,77 @@ function resetSite() {
             searchInput.addEventListener('keypress', (e) => { if(e.key === 'Enter') performSearch(); });
             document.getElementById('searchIcon').addEventListener('click', () => performSearch());
             
-            // Code Admin Secret
             searchInput.addEventListener('input', function(e) {
-                if (e.target.value === 'admin123') { 
+                if (e.target.value === atob('YWRtaW4xMjM=')) { 
                     toggleAdminAuth(true); 
                     e.target.value = ''; 
                 }
             });
-            
+
             setCategory('all');
-        };
+        }; 
+
+        function initMegaMenu() {
+            const studios = ["Marvel", "DC", "Disney", "Dreamworks"];
+            
+            // --- MENU FILMS ---
+            const filmNav = document.getElementById('nav-film').nextElementSibling; 
+            let filmHTML = `
+                <div style="display:flex; gap: 40px; width: 100%; flex-wrap: wrap;">
+                    <div class="drop-column">
+                        <div style="margin-bottom:15px;">
+                            <h3><i class="fas fa-star"></i> STUDIOS</h3>
+                            ${studios.map(s => `<a onclick="event.stopPropagation(); setFilter('film', '${s}'); closeMobileMenu()"><i class="fas fa-magic"></i> ${s}</a>`).join('')}
+                        </div>
+                        <h3><i class="fas fa-tags"></i> PAR GENRE</h3>
+                        <a onclick="event.stopPropagation(); setFilter('film', 'all'); closeMobileMenu()"><i class="fas fa-layer-group"></i> Tous les Films</a>
+                        ${GENRES_LIST.filter(g => !studios.includes(g)).map(g => `<a onclick="event.stopPropagation(); setFilter('film', '${g}'); closeMobileMenu()"><i class="fas fa-caret-right"></i> ${g}</a>`).join('')}
+                    </div>
+                    <div class="drop-column">
+                        <h3><i class="fas fa-calendar-alt"></i> PAR ANNÉE</h3>
+                        <a onclick="event.stopPropagation(); setYearFilter('film', '2025'); closeMobileMenu()"><i class="fas fa-clock"></i> 2025</a>
+                        <a onclick="event.stopPropagation(); setYearFilter('film', '2024'); closeMobileMenu()"><i class="fas fa-clock"></i> 2024</a>
+                        <a onclick="event.stopPropagation(); setYearFilter('film', '2023'); closeMobileMenu()"><i class="fas fa-clock"></i> 2023</a>
+                        
+                        <div style="margin-top:15px;">
+                            <span style="color:#888; font-size:11px; margin-bottom:5px; display:block;">Rechercher une autre année :</span>
+                            <div style="display:flex; gap:5px;">
+                                <input type="number" id="menu-film-year" placeholder="Ex: 2002" style="width:80px; background:#222; border:1px solid #444; color:white; padding:5px; border-radius:3px; outline:none;" onkeypress="if(event.key === 'Enter') applyMenuYear('film')">
+                                <button onclick="event.stopPropagation(); applyMenuYear('film')" style="background:var(--primary); border:none; cursor:pointer; font-weight:bold; padding:0 10px; border-radius:3px; color:black;"><i class="fas fa-search"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            filmNav.innerHTML = filmHTML;
+
+            // --- MENU SÉRIES ---
+            const serieNav = document.getElementById('nav-serie').nextElementSibling;
+            let serieHTML = `
+                <div style="display:flex; gap: 40px; width: 100%; flex-wrap: wrap;">
+                    <div class="drop-column">
+                        <h3><i class="fas fa-tags"></i> PAR GENRE</h3>
+                        <a onclick="event.stopPropagation(); setFilter('serie', 'all'); closeMobileMenu()"><i class="fas fa-layer-group"></i> Toutes les Séries</a>
+                        ${GENRES_LIST.map(g => `<a onclick="event.stopPropagation(); setFilter('serie', '${g}'); closeMobileMenu()"><i class="fas fa-caret-right"></i> ${g}</a>`).join('')}
+                    </div>
+                    <div class="drop-column">
+                        <h3><i class="fas fa-calendar-alt"></i> PAR ANNÉE</h3>
+                        <a onclick="event.stopPropagation(); setYearFilter('serie', '2025'); closeMobileMenu()"><i class="fas fa-clock"></i> 2025</a>
+                        <a onclick="event.stopPropagation(); setYearFilter('serie', '2024'); closeMobileMenu()"><i class="fas fa-clock"></i> 2024</a>
+                        <a onclick="event.stopPropagation(); setYearFilter('serie', '2023'); closeMobileMenu()"><i class="fas fa-clock"></i> 2023</a>
+                        
+                        <div style="margin-top:15px;">
+                            <span style="color:#888; font-size:11px; margin-bottom:5px; display:block;">Rechercher une autre année :</span>
+                            <div style="display:flex; gap:5px;">
+                                <input type="number" id="menu-serie-year" placeholder="Ex: 2002" style="width:80px; background:#222; border:1px solid #444; color:white; padding:5px; border-radius:3px; outline:none;" onkeypress="if(event.key === 'Enter') applyMenuYear('serie')">
+                                <button onclick="event.stopPropagation(); applyMenuYear('serie')" style="background:var(--primary); border:none; cursor:pointer; font-weight:bold; padding:0 10px; border-radius:3px; color:black;"><i class="fas fa-search"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            serieNav.innerHTML = serieHTML;
+        }
 
         // --- 3. GESTION DU COVER PAGE & ACCES ---
         document.addEventListener("DOMContentLoaded", function() {
@@ -653,7 +734,6 @@ function resetSite() {
             
             if(cover) {
                 document.body.classList.add('no-scroll'); 
-
                 cover.addEventListener('click', function() {
                     cover.style.opacity = '0';
                     setTimeout(function() {
@@ -668,24 +748,17 @@ function resetSite() {
             }
         });
 
-        // Fonction fermeture Discord simple
-        function closeDiscordOnly() {
-            // Ne fait rien pour forcer le code
-        }
-
-        // Fonction vérification CODE
         function checkAccessCode() {
             const input = document.getElementById('access-code-input');
             const errorMsg = document.getElementById('access-error');
             const code = input.value.trim();
-
-            if (code === 'VIPLK10') {
+            if (code === atob('VklQTEsxMA==')) {
                 isVipUser = true;
                 hasAccess = true; 
                 document.getElementById('vip-diamond').style.display = 'block';
                 unlockSite();
             } 
-            else if (code === 'cinelk10.co') {
+            else if (code === atob('Y2luZWxrMTAuY28=')) {
                 isVipUser = false;
                 hasAccess = true; 
                 unlockSite();
@@ -713,37 +786,6 @@ function resetSite() {
             moviesDB = Array.from(movieMap.values());
         }
 
-      function initMegaMenu() {
-    const studios = ["Marvel", "DC", "Disney", "Dreamworks"];
-    const filmContainer = document.getElementById('drop-film-genre-list');
-    
-    // On vide et on prépare la structure
-    filmContainer.innerHTML = '';
-    
-    // Ajout d'une section Studios en haut
-    let studioHTML = `<div style="margin-bottom:15px;"><h3><i class="fas fa-star"></i> STUDIOS</h3>`;
-    studios.forEach(s => {
-        studioHTML += `<a onclick="event.stopPropagation(); setFilter('film', '${s}'); closeMobileMenu()"><i class="fas fa-magic"></i> ${s}</a>`;
-    });
-    studioHTML += `</div><h3><i class="fas fa-tags"></i> PAR GENRE</h3>`;
-    
-    filmContainer.innerHTML = studioHTML + `<a onclick="event.stopPropagation(); setFilter('film', 'all'); closeMobileMenu()"><i class="fas fa-layer-group"></i> Tous les Films</a>`;
-    
-    // On ajoute le reste des genres (en excluant les studios de la liste des genres pour ne pas doubler)
-    GENRES_LIST.forEach(g => {
-        if(!studios.includes(g)) {
-            filmContainer.innerHTML += `<a onclick="event.stopPropagation(); setFilter('film', '${g}'); closeMobileMenu()"><i class="fas fa-caret-right"></i> ${g}</a>`;
-        }
-    });
-
-    // Pour les séries (on garde la liste classique ou on adapte)
-    const serieContainer = document.getElementById('drop-serie-genre-list');
-    serieContainer.innerHTML = `<a onclick="event.stopPropagation(); setFilter('serie', 'all'); closeMobileMenu()"><i class="fas fa-layer-group"></i> Toutes les Séries</a>`;
-    GENRES_LIST.forEach(g => {
-        serieContainer.innerHTML += `<a onclick="event.stopPropagation(); setFilter('serie', '${g}'); closeMobileMenu()"><i class="fas fa-caret-right"></i> ${g}</a>`;
-    });
-}
-
         function renderAdminGenres() {
             const container = document.getElementById('genre-checkbox-container');
             container.innerHTML = '';
@@ -752,20 +794,66 @@ function resetSite() {
             });
         }
 
-        function setCategory(cat) {
-            currentCategory = cat; currentGenreFilter = 'all'; currentPage = 1; 
+       function setCategory(cat) {
+            currentCategory = cat; currentGenreFilter = 'all'; currentYearFilter = 'all'; currentPage = 1; 
             document.getElementById('searchInput').value = ''; 
+            const globalInput = document.getElementById('year-filter-input');
+            if(globalInput) globalInput.value = '';
             updateNavActive(cat); updateGrid();
         }
 
         function setFilter(cat, genre) {
-            currentCategory = cat; currentGenreFilter = genre; currentPage = 1;
+            currentCategory = cat; currentGenreFilter = genre; currentYearFilter = 'all'; currentPage = 1;
+            const globalInput = document.getElementById('year-filter-input');
+            if(globalInput) globalInput.value = '';
             updateNavActive(cat); updateGrid();
         }
 
         function updateNavActive(cat) {
             document.querySelectorAll('.nav-link').forEach(a => a.classList.remove('active'));
             let navBtn = document.getElementById('nav-' + cat); if(navBtn) navBtn.classList.add('active');
+        }
+
+        function changeSort() {
+            currentSort = document.getElementById('sort-select').value;
+            currentPage = 1; 
+            updateGrid(); 
+        }
+
+        function applyGlobalYear() {
+            const inputVal = document.getElementById('year-filter-input').value.trim();
+            if (inputVal && inputVal.length === 4) {
+                currentYearFilter = inputVal;
+                currentPage = 1;
+                updateGrid();
+            }
+        }
+
+        function clearGlobalYear() {
+            document.getElementById('year-filter-input').value = '';
+            currentYearFilter = 'all';
+            currentPage = 1;
+            updateGrid();
+        }
+
+        function setYearFilter(cat, year) {
+            currentCategory = cat;
+            currentGenreFilter = 'all'; 
+            currentYearFilter = year;
+            currentPage = 1;
+            const globalYearInput = document.getElementById('year-filter-input');
+            if(globalYearInput) globalYearInput.value = year;
+            updateNavActive(cat); 
+            updateGrid();
+        }
+
+        function applyMenuYear(cat) {
+            const input = document.getElementById('menu-' + cat + '-year');
+            const y = input.value.trim();
+            if (y && y.length === 4) {
+                setYearFilter(cat, y);
+                closeMobileMenu(); 
+            }
         }
 
         function performSearch(forcedQuery = null) {
@@ -792,19 +880,41 @@ function resetSite() {
                 const titles = { 'all': 'Nouveautés', 'film': 'Films', 'serie': 'Séries' };
                 let displayTitle = titles[currentCategory] || 'Catalogue';
                 if(currentGenreFilter !== 'all') displayTitle += ` : ${currentGenreFilter}`;
+                if(currentYearFilter !== 'all') displayTitle += ` (Année : ${currentYearFilter})`; 
                 document.getElementById('cat-title').innerText = displayTitle;
+                
                 filteredList = moviesDB.filter(m => {
                     const typeMatch = (currentCategory === 'all') || (m.type === currentCategory);
                     const genreMatch = (currentGenreFilter === 'all') || (m.genre && m.genre.includes(currentGenreFilter));
-                    return typeMatch && genreMatch;
+                    const yearMatch = (currentYearFilter === 'all') || (String(m.year) === String(currentYearFilter));
+                    return typeMatch && genreMatch && yearMatch;
                 });
-                filteredList.reverse(); 
+                
+                filteredList.sort((a, b) => {
+                    const yearA = parseInt(a.year) || 0;
+                    const yearB = parseInt(b.year) || 0;
+                    const noteA = parseFloat(a.rating) || 0;
+                    const noteB = parseFloat(b.rating) || 0;
+
+                    if (currentSort === 'date_desc') {
+                        if (yearA !== yearB) return yearB - yearA; 
+                        return String(b.id).localeCompare(String(a.id)); 
+                    }
+                    if (currentSort === 'date_asc') {
+                        if (yearA !== yearB) return yearA - yearB; 
+                        return String(a.id).localeCompare(String(b.id));
+                    }
+                    if (currentSort === 'note_desc') { return noteB - noteA; }
+                    if (currentSort === 'alpha_asc') { return (a.title || "").localeCompare(b.title || ""); }
+                    return 0;
+                });
             }
+            
             const totalPages = Math.ceil(filteredList.length / ITEMS_PER_PAGE);
             if (currentPage > totalPages && totalPages > 0) currentPage = 1;
             const start = (currentPage - 1) * ITEMS_PER_PAGE; const end = start + ITEMS_PER_PAGE;
             const pageItems = filteredList.slice(start, end);
-            if(filteredList.length === 0) { grid.innerHTML = '<div style="color:#aaa; padding:30px;">Aucun résultat trouvé.</div>'; }
+            if(filteredList.length === 0) { grid.innerHTML = '<div style="color:#aaa; padding:30px;">Aucun résultat trouvé pour cette recherche.</div>'; }
             pageItems.forEach(m => {
                 const div = document.createElement('div'); div.className = 'movie-card'; div.style.display = 'block'; 
                 div.onclick = () => openP(m.id);
@@ -930,7 +1040,6 @@ function resetSite() {
         function changeLanguage() { currentLanguage = document.getElementById('language-select').value; updatePlayerInterface(); }
         function changeServer(serverName) { currentServer = serverName; updatePlayerInterface(); }
 
-        // --- C'EST ICI QUE LA MAGIE S'OPERE (VERSION VIP SECURISEE + ANTI-BYPASS) ---
         function updatePlayerInterface() {
             if (!currentMovie) return;
 
@@ -955,27 +1064,21 @@ function resetSite() {
             const btnPrem = document.getElementById('btn-server-prem');
             const btnUql = document.getElementById('btn-server-uql');
 
-            // 1. On cache tout par défaut
             btnPrem.style.display = 'none';
             btnUql.style.display = 'none';
 
-            // 2. VERIFICATION CRITIQUE : Si pas de code, on bloque TOUT
             if (!hasAccess) {
                 document.getElementById('video-container').innerHTML = 
                     '<div style="color:#e74c3c; text-align:center; padding-top:200px; font-weight:bold;">' +
                     '<i class="fas fa-lock" style="font-size:40px; margin-bottom:15px;"></i><br>' +
                     'ACCÈS REFUSÉ<br>Veuillez entrer un code d\'accès valide.' +
                     '</div>';
-                return; // ON STOPPE TOUT ICI -> Impossible de voir le film
+                return; 
             }
-
-            // 3. Si accès validé, on continue la logique
             
-            // SECURITE VIP : Affiche Premium SEULEMENT si VIP
             if (linkPremium && linkPremium.trim() !== "" && isVipUser === true) {
                 btnPrem.style.display = 'inline-block';
             }
-            // Affiche Uqload pour tout le monde (si lien existe)
             if (linkUqload && linkUqload.trim() !== "") {
                 btnUql.style.display = 'inline-block';
             }
@@ -997,7 +1100,6 @@ function resetSite() {
                 setVideoContent(linkUqload);
             } 
             else {
-                // Message si on est VIP mais pas de lien, ou Standard mais pas de lien Uqload
                 if (!isVipUser && linkPremium && !linkUqload) {
                      document.getElementById('video-container').innerHTML = '<div style="color:#e74c3c; text-align:center; padding-top:200px;"><i class="fas fa-lock"></i> Ce film est réservé aux membres VIP (Serveur Premium uniquement).</div>';
                 } else {
@@ -1225,6 +1327,7 @@ function resetSite() {
             const copyText = document.getElementById("export-code");
             copyText.select(); document.execCommand("copy"); alert("Code copié !");
         }
+
         function renderPagination() {
             const bar = document.getElementById('pag-bar'); bar.innerHTML = '';
             const totalPages = Math.ceil(filteredList.length / ITEMS_PER_PAGE);
@@ -1244,7 +1347,9 @@ function resetSite() {
             if (totalPages > 1) { addBtn(totalPages, totalPages, currentPage === totalPages); }
             if (currentPage < totalPages) { addBtn(currentPage + 1, '»', false); }
         }
+
         function goToPage(p) { currentPage = p; updateGrid(); window.scrollTo({top:0, behavior:'smooth'}); }
+
         function filterByTag(genre) {
             closeP(); 
             setFilter('all', genre); 
@@ -1315,12 +1420,12 @@ function resetSite() {
             document.body.classList.remove('no-scroll');
             document.getElementById('actor-overlay').style.display = 'none';
         }
+
         async function loadCastImages(castString) {
             const container = document.getElementById('dp-cast-images');
-            container.innerHTML = ''; // On vide au cas où
+            container.innerHTML = ''; 
             if (!castString) return;
 
-            // On sépare les noms et on en prend 8 max pour ne pas faire buguer l'API
             const actors = castString.split(',').map(a => a.trim()).slice(0, 8); 
 
             actors.forEach(async (actorName) => {
@@ -1329,14 +1434,12 @@ function resetSite() {
                     const response = await fetch(searchUrl);
                     const data = await response.json();
 
-                    // Si on trouve une photo pour l'acteur
                     if (data.results && data.results.length > 0 && data.results[0].profile_path) {
                         const profileUrl = `https://image.tmdb.org/t/p/w185${data.results[0].profile_path}`;
 
                         const card = document.createElement('div');
                         card.className = 'cast-card';
                         
-                        // Si on clique sur la photo, ça ouvre la modale de l'acteur
                         card.onclick = () => { 
                             closeP(); 
                             window.scrollTo({top: 0, behavior: 'smooth'}); 
