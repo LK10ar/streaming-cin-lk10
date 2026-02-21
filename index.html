@@ -112,7 +112,46 @@
         .vote-count { font-size: 10px; color: #555; text-align: center; width: 100%; margin-top: 5px; }
         #dp-thumb { font-size: 35px; transition: 0.3s; }
         .thumb-good { color: #2ecc71; } .thumb-mid { color: #f1c40f; } .thumb-bad { color: #e74c3c; } .thumb-rotate { transform: rotate(90deg); }
+/* --- GALERIE ACTEURS --- */
+        .cast-images-container {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+        }
+        /* Design de la scrollbar pour la liste d'acteurs */
+        .cast-images-container::-webkit-scrollbar { height: 6px; }
+        .cast-images-container::-webkit-scrollbar-track { background: #111; border-radius: 3px; }
+        .cast-images-container::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 3px; }
 
+        .cast-card {
+            width: 80px;
+            flex-shrink: 0;
+            cursor: pointer;
+            transition: 0.3s;
+            text-align: center;
+        }
+        .cast-card:hover {
+            transform: scale(1.05);
+            filter: drop-shadow(0 0 5px var(--primary));
+        }
+        .cast-photo {
+            width: 80px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 4px;
+            background-color: #222;
+            border: 1px solid #333;
+        }
+        .cast-name-small {
+            font-size: 10px;
+            color: #aaa;
+            margin-top: 5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
         /* --- 5. OVERLAYS DIVERS (BA, ACTEUR, ADMIN, COVER, DISCORD) --- */
         #trailer-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 3000; justify-content: center; align-items: center; }
         .trailer-content { width: 90%; max-width: 900px; position: relative; aspect-ratio: 16 / 9; background: #000; }
@@ -447,6 +486,7 @@ function resetSite() {
                     <button id="btn-read-more" class="read-more-btn" onclick="toggleDesc()">Lire la suite</button>
 
                     <div class="tech-info"><div class="ti-label">Réalisateur:</div> <div class="ti-val" id="dp-dir">Director</div><div class="ti-label">Acteurs:</div> <div class="ti-val" id="dp-cast">Actors</div></div>
+                <div id="dp-cast-images" class="cast-images-container"></div>
                 </div>
                 <div class="d-right">
     <div class="vote-row">
@@ -566,7 +606,7 @@ function resetSite() {
         let isVipUser = false;
         let hasAccess = false; // SECURITE PAR DEFAUT
         let moviesDB = [];
-        const GENRES_LIST = ["Action", "Aventure", "Animation", "Disney", "Dreamworks", "Marvel", "DC", "Comédie", "Crime", "Drame", "Fantastique", "Guerre", "Histoire","Epouvante-horreur,", "Horreur", "Mystère", "Romance", "Science-Fiction", "Thriller", "Western"];
+        const GENRES_LIST = ["Action", "Aventure", "Animation", "Disney", "Dreamworks", "Marvel", "DC", "Comédie", "Crime", "Drame", "Fantastique", "Guerre", "Histoire", "Horreur", "Mystère", "Romance", "Science-Fiction", "Thriller", "Western"];
         const ITEMS_PER_PAGE = 18; 
         let currentPage = 1; 
         let currentCategory = 'all'; 
@@ -848,6 +888,7 @@ function resetSite() {
             };
             createLinks('dp-dir', m.dir); 
             createLinks('dp-cast', m.cast); 
+            loadCastImages(m.cast);
             
             const trailerBtn = document.getElementById('btn-trailer');
             if(m.trailer_iframe) { trailerBtn.style.opacity = '1'; trailerBtn.style.cursor = 'pointer'; } 
@@ -1274,8 +1315,45 @@ function resetSite() {
             document.body.classList.remove('no-scroll');
             document.getElementById('actor-overlay').style.display = 'none';
         }
+        async function loadCastImages(castString) {
+            const container = document.getElementById('dp-cast-images');
+            container.innerHTML = ''; // On vide au cas où
+            if (!castString) return;
+
+            // On sépare les noms et on en prend 8 max pour ne pas faire buguer l'API
+            const actors = castString.split(',').map(a => a.trim()).slice(0, 8); 
+
+            actors.forEach(async (actorName) => {
+                try {
+                    const searchUrl = `https://api.themoviedb.org/3/search/person?api_key=${TMDB_API_KEY}&language=fr-FR&query=${encodeURIComponent(actorName)}`;
+                    const response = await fetch(searchUrl);
+                    const data = await response.json();
+
+                    // Si on trouve une photo pour l'acteur
+                    if (data.results && data.results.length > 0 && data.results[0].profile_path) {
+                        const profileUrl = `https://image.tmdb.org/t/p/w185${data.results[0].profile_path}`;
+
+                        const card = document.createElement('div');
+                        card.className = 'cast-card';
+                        
+                        // Si on clique sur la photo, ça ouvre la modale de l'acteur
+                        card.onclick = () => { 
+                            closeP(); 
+                            window.scrollTo({top: 0, behavior: 'smooth'}); 
+                            openActorProfile(actorName); 
+                        };
+
+                        card.innerHTML = `
+                            <img src="${profileUrl}" alt="${actorName}" class="cast-photo" loading="lazy">
+                            <div class="cast-name-small">${actorName}</div>
+                        `;
+                        container.appendChild(card);
+                    }
+                } catch (err) {
+                    console.error("Erreur API TMDB pour : " + actorName, err);
+                }
+            });
+        }
     </script>
 </body>
 </html>
-
-
