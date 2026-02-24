@@ -342,6 +342,11 @@ function resetSite() {
             <li class="nav-item">
                 <a id="nav-all" class="nav-link active" onclick="setCategory('all'); toggleMobileMenu()"><i class="fas fa-home"></i> ACCUEIL</a>
             </li>
+            <li class="nav-item">
+    <a id="nav-catalogue" class="nav-link" onclick="showCatalogue(); toggleMobileMenu()">
+        <i class="fas fa-book"></i> CATALOGUE
+            </a>
+           </li>
             <li class="nav-item" onclick="toggleSubMenu(this)">
                 <a id="nav-film" class="nav-link"><span><i class="fas fa-film"></i> FILMS</span><i class="fas fa-chevron-down" style="font-size:10px;"></i></a>
                 <div class="dropdown-content">
@@ -794,20 +799,33 @@ function resetSite() {
             });
         }
 
-       function setCategory(cat) {
-            currentCategory = cat; currentGenreFilter = 'all'; currentYearFilter = 'all'; currentPage = 1; 
-            document.getElementById('searchInput').value = ''; 
-            const globalInput = document.getElementById('year-filter-input');
-            if(globalInput) globalInput.value = '';
-            updateNavActive(cat); updateGrid();
-        }
+    function setCategory(cat) {
+    // On fait réapparaître la pagination
+    document.getElementById('pag-bar').style.display = 'flex'; 
+    currentCategory = cat; 
+    currentGenreFilter = 'all'; 
+    currentYearFilter = 'all'; 
+    currentPage = 1; 
+    document.getElementById('searchInput').value = ''; 
+    const globalInput = document.getElementById('year-filter-input');
+    if(globalInput) globalInput.value = '';
+    updateNavActive(cat); 
+    updateGrid();
+}
+            
 
         function setFilter(cat, genre) {
-            currentCategory = cat; currentGenreFilter = genre; currentYearFilter = 'all'; currentPage = 1;
-            const globalInput = document.getElementById('year-filter-input');
-            if(globalInput) globalInput.value = '';
-            updateNavActive(cat); updateGrid();
-        }
+    // On fait revenir la pagination si elle était cachée par le catalogue
+    document.getElementById('pag-bar').style.display = 'flex'; 
+    currentCategory = cat; 
+    currentGenreFilter = genre; 
+    currentYearFilter = 'all'; 
+    currentPage = 1;
+    const globalInput = document.getElementById('year-filter-input');
+    if(globalInput) globalInput.value = '';
+    updateNavActive(cat); 
+    updateGrid();
+}
 
         function updateNavActive(cat) {
             document.querySelectorAll('.nav-link').forEach(a => a.classList.remove('active'));
@@ -856,23 +874,25 @@ function resetSite() {
             }
         }
 
-        function performSearch(forcedQuery = null) {
-            const query = forcedQuery ? forcedQuery.toLowerCase().trim() : document.getElementById('searchInput').value.toLowerCase().trim();
-            if(forcedQuery) document.getElementById('searchInput').value = forcedQuery;
-            if(query === '') { setCategory('all'); return; }
+       function performSearch(forcedQuery = null) {
+    // On fait revenir la pagination ici aussi
+    document.getElementById('pag-bar').style.display = 'flex'; 
+    const query = forcedQuery ? forcedQuery.toLowerCase().trim() : document.getElementById('searchInput').value.toLowerCase().trim();
+    if(forcedQuery) document.getElementById('searchInput').value = forcedQuery;
+    if(query === '') { setCategory('all'); return; }
 
-            currentPage = 1; 
-            document.querySelectorAll('.nav-link').forEach(a => a.classList.remove('active'));
-            document.getElementById('cat-title').innerText = `Résultats pour : "${query}"`;
-            
-            filteredList = moviesDB.filter(m => {
-                const inTitle = m.title && m.title.toLowerCase().includes(query);
-                const inCast = m.cast && m.cast.toLowerCase().includes(query);
-                const inDir = m.dir && m.dir.toLowerCase().includes(query);
-                return inTitle || inCast || inDir;
-            });
-            updateGrid(true);
-        }
+    currentPage = 1; 
+    document.querySelectorAll('.nav-link').forEach(a => a.classList.remove('active'));
+    document.getElementById('cat-title').innerText = `Résultats pour : "${query}"`;
+    
+    filteredList = moviesDB.filter(m => {
+        const inTitle = m.title && m.title.toLowerCase().includes(query);
+        const inCast = m.cast && m.cast.toLowerCase().includes(query);
+        const inDir = m.dir && m.dir.toLowerCase().includes(query);
+        return inTitle || inCast || inDir;
+    });
+    updateGrid(true);
+}
 
         function updateGrid(isSearchMode = false) {
             const grid = document.getElementById('grid'); grid.innerHTML = '';
@@ -1457,6 +1477,45 @@ function resetSite() {
                 }
             });
         }
+        function showCatalogue() {
+    // 1. On change le titre et on affiche le nombre exact
+    const total = moviesDB.length;
+    document.getElementById('cat-title').innerText = "Catalogue Complet (" + total + " titres)";
+    
+    // 2. On désactive les filtres pour tout voir
+    currentCategory = 'all';
+    currentGenreFilter = 'all';
+    currentYearFilter = 'all';
+    
+    // 3. On sélectionne la grille
+    const grid = document.getElementById('grid');
+    grid.innerHTML = ''; // On vide
+    
+    // 4. On cache la barre de pagination (puisque tout est sur une page)
+    document.getElementById('pag-bar').style.display = 'none';
+
+    // 5. On affiche TOUS les films de la base de données d'un coup
+    moviesDB.forEach(m => {
+        const div = document.createElement('div');
+        div.className = 'movie-card';
+        div.style.display = 'block'; 
+        div.onclick = () => openP(m.id);
+        const rating = m.rating || "-";
+        div.innerHTML = `
+            <div class="poster" style="background-image: url('${m.poster}')">
+                <span class="badge b-hd">HD</span>
+                <span class="badge b-type">${m.type.toUpperCase()}</span>
+                <div class="grid-rating">${rating}</div>
+            </div>
+            <div class="movie-info"><div class="movie-title">${m.title}</div></div>
+        `;
+        grid.appendChild(div);
+    });
+
+    // 6. On gère le style du menu
+    document.querySelectorAll('.nav-link').forEach(a => a.classList.remove('active'));
+    document.getElementById('nav-catalogue').classList.add('active');
+}
     </script>
 </body>
 </html>
